@@ -7,7 +7,7 @@
            <router-link :to="'/profile/'+doc.createdBy.id" class="link-type">
             <span>{{ doc.createdBy.id }}</span>
           </router-link>
-          <span class="text-muted" style="margin: 0 8px;">&bull;</span>
+          <span class="text-muted" style="margin: 0 8px;">&bull; {{votersCounts}}</span>
           <el-button v-show="doc.follow" class="link-type" type="text" @click="follow(doc.createdBy.id)">follow</el-button>
 
         </span>
@@ -15,7 +15,7 @@
         <span class="description">Shared publicly - <timeago :datetime="doc.createdAt" :auto-update="60"></timeago></span>
       </div>
       <h1>
-        {{ doc.title }}
+        {{ doc.title }} 
       </h1>
       <p style="margin-bottom: 2px;font-size: 14px;font-weight: 500;line-height: 1.428571429;letter-spacing: 0.6px;">
         {{ doc.abstract }}
@@ -41,7 +41,7 @@
         
         <el-button v-else v-show="!doc.endAt || new Date(doc.endAt) - new Date() > 0" type="text" style="float: right; margin: 6px 0px;padding: 6px 16px;margin-left: 8px" plain :disabled="!radio" :loading="loading" @click="onVote(doc.id)">Vote</el-button>
         <span v-show="doc.endAt" style="float: right; margin: 6px 0px;padding: 6px 0px;color: gray;font-size: 12px;"><span style="margin: 0 8px;">&bull;</span>{{getDeffrence(doc.endAt)}} </span>
-        <span style="float: right; margin: 6px 0px;padding: 6px 0px;color: gray;font-size: 12px;"> {{doc.voteCount}} votes </span>
+        <span style="float: right; margin: 6px 0px;padding: 6px 0px;color: gray;font-size: 12px;"> {{doc.voteCount}}  votes </span>
       </div>
 
       <!-- <ul v-else class="list-inline">
@@ -72,11 +72,31 @@
 const avatarPrefix = '?imageView2/1/w/80/h/80'
 import { votePost } from '@/api/article'
 import { followUser } from '@/api/user'
+import { mapGetters } from 'vuex'
+const Tx = require('ethereumjs-tx')
+const ethereum = require('ethereumjs-utils');
 
+const contract = 'Haal'
+const minABI = [  
+  // balanceOf
+  {    
+    constant: true,
+
+    inputs: [{ name: "_owner", type: "address" }],
+
+    name: "balanceOf",
+
+    outputs: [{ name: "balance", type: "uint256" }],
+
+    type: "function",
+  },
+
+];
 export default {
   name: 'Post',
   props: {
-    doc: { type: Object, default: () => ({}) }
+    doc: { type: Object, default: () => ({}) },
+    //keypair: {type: Object, default: () => ({ privKey: '' })}
   },
   data() {
     return {
@@ -87,13 +107,40 @@ export default {
       carouselImages: 'https://wpimg.wallstcn.com/9679ffb0-9e0b-4451-9916-e21992218054.jpg'
     }
   },
+  created() {
+        // this.$store.dispatch('drizzle/REGISTER_CONTRACT', {
+        //     contractName: contract,
+        //     method:'getproposals',
+        //     methodArgs:[],
+        // });
+        this.$store.dispatch('drizzle/REGISTER_CONTRACT', {
+            contractName: contract,
+            method:'votesCount',
+            methodArgs:[],
+        });
+       
+    },
+    
+    computed:{
+        ...mapGetters("drizzle", ["drizzleInstance"]),
+        ...mapGetters(['stealth']),
+        ...mapGetters("contracts", ["getContractData"]),
+          votersCounts() {
+            return this.getContractData({
+              contract: contract,
+              method: "votesCount"
+            })
+          },
+          
+        web3() {
+          return this.drizzleInstance.web3;
+        }
+    },
   methods: {
     follow(id){
       followUser({userId: id}).then((response) => {
         console.log(response)
-      }).catch(() => {
-
-      })
+      }).catch(() => {})
     },
     getDeffrence(date_future) {
       // get total seconds between the times
@@ -124,12 +171,6 @@ export default {
       if(minutes > 1)
         return `${minutes} minutes left`;
       return `less than a minute`;
-      delta -= minutes * 60;
-      console.log(`minutes:  ${minutes}`)
-
-      // what's left is seconds
-      var seconds = delta % 60;  // in theory the modulus is not required
-      console.log(`seconds:  ${seconds}`)
     },
     createVoteProgress(item) {
       return item.voteCount === 0 ? '' : `linear-gradient(to right, #e8f4ff ${item.voteCount/this.doc.voteCount*100}%, white 0%)`;
@@ -137,21 +178,84 @@ export default {
     togle() {
       this.contunie === !this.contunie
     },
-    onVote(post) {
+    fromAscii(value) {
+      return this.web3.utils.utf8ToHex(value)
+    },
+    async onVote(post) {
       // console.log({postId: post})
       // console.log({votedOn: this.radio})
       // console.log({userid: this.id_})
-      this.loading = true;
-      votePost({ postId: post, votedOn: this.radio })
-        .then((response) => {
-          this.doc.voted = response.voted;
-          this.doc.voteCount = response.voteCount;
-          this.doc.porpostions = response.porpostions;
-          this.loading = false
-        })
-        .catch(() => {
-          this.loading = false
-        })
+     //this.loading = true;
+
+     let haal = this.drizzleInstance.contracts[contract];
+     let haalAddress = haal.address;
+     let ethAddress = this.stealth ? '0x' + ethereum.privateToAddress(this.stealth.privKey).toString('hex') : null;
+
+
+
+     const method = haal.methods.addVote(this.fromAscii(post), this.web3.utils.padRight(this.fromAscii(this.radio), 64));
+     const encodedABI = method.encodeABI();
+
+     const estimateGas2 = await this.web3.eth.estimateGas({
+        from: ethAddress,
+        to: haalAddress,
+        data: encodedABI
+     });
+
+      // const contract = await this.web3.eth.Contract(minABI, haalAddress);
+
+      let privateKey = Buffer.from(this.stealth.privKey, 'hex');
+
+      console.log(`choised element ${this.web3.utils.padRight(this.fromAscii(this.radio), 64)}`)
+      console.log(`estimateGas: ${estimateGas2}`)
+      console.log(`EthStealth Address ${ethAddress}`)
+      //console.log(`account balance ${ await contract.methods.balanceOf("0xE97f91fb1fd8d57c7084A11e134a3726686988db").call()}`)
+
+
+      let rawTx = {
+        // nonce: this.web3.utils.toHex(this.web3.eth.getTransactionCount(ethAddress, 'pending')),
+        nonce: this.web3.utils.toHex(await this.web3.eth.getTransactionCount(ethAddress)),
+        from: ethAddress,
+        to: haalAddress,
+        gasPrice: this.web3.utils.toHex(this.web3.utils.toWei('6', 'gwei')),
+        gasLimit: this.web3.utils.toHex('10000'),
+        gas: estimateGas2,
+        data: encodedABI
+      }
+
+      let unsignedTx = new Tx(rawTx);
+      unsignedTx.sign(privateKey);
+
+      let serializedTx = unsignedTx.serialize();
+      let tx = await this.web3.eth.sendSignedTransaction('0x' + serializedTx.toString('hex'));
+      let thiis = this;
+      console.log(`Transaction Hash ${tx.transactionHash}`);
+      this.web3.eth.getTransactionReceipt(tx.transactionHash).then(result => {
+        if(result.status){
+          thiis.$message({
+            message: 'Vote commited to blockchain correctly.',
+            type: 'success'
+          });
+        }else {
+          thiis.$message.error('Oops, error commitimg vote');
+        }
+      }) 
+
+      // this.drizzleInstance
+      //       .contracts[contract]
+      //       .methods['addVote']
+      //       .cacheSend(this.fromAscii(post), this.fromAscii(this.radio));
+
+      // votePost({ postId: post, votedOn: this.radio })
+      //   .then((response) => {
+      //     this.doc.voted = response.voted;
+      //     this.doc.voteCount = response.voteCount;
+      //     this.doc.porpostions = response.porpostions;
+      //     this.loading = false
+      //   })
+      //   .catch(() => {
+      //     this.loading = false
+      //   })
     },
     date(date) {
       return new Intl.DateTimeFormat('fr-FR', { dateStyle: 'full', timeStyle: 'long' }).format(new Date(date))

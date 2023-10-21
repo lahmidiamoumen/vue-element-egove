@@ -22,6 +22,9 @@ import './permission' // permission control
 import './utils/error-log' // error log
 import * as filters from './filters' // global filters
 
+
+import drizzleVuePlugin from '@drizzle/vue-plugin'
+import drizzleOptions from './drizzleOptions'
 /**
  * If you don't want to use mock-server
  * you want to use MockJs for mock api
@@ -34,6 +37,7 @@ import * as filters from './filters' // global filters
 //   const { mockXHR } = require('../mock')
 //   mockXHR()
 // }
+Vue.use(drizzleVuePlugin, { store, drizzleOptions })
 
 Vue.use(VueTimeago, {
   name: 'Timeago', // Component name, `Timeago` by default

@@ -136,6 +136,35 @@
         
       </div>
     </el-card>
+ 
+    <el-card  shadow="never" class="box-shadow">
+      <div class="post">
+         <b>Votes Count: </b>  {{votesCount}} <br>
+          <b> Stealth Account Blance: </b> {{ balance }} <br>
+          <b>Stealth Account Hash: </b> {{ ethAddress }}
+          <span style="visibility: hidden;">{{getBalanced()}}</span>
+      </div>
+    </el-card>
+    <el-card class="box-shadow">
+      <div class="post"> 
+          <div v-for="(porp,index) in contractProposals" :key="index">
+            <br>
+            
+            <el-card shadow="hover"  :body-style="{ padding: '20px' }">
+                <div slot="header">
+                    <span><b>Creator</b> {{porp[0]}}</span>
+                </div>
+                <table>
+                    <tr> <b>Vote text keys</b> <br> {{ convertArray(porp[1]) }}</tr>
+                    <tr> <b>Vote Count</b> <br> {{porp[2]}}</tr>
+                    <tr><b>Post ID </b> <br> {{ convert(porp[3])}}</tr>
+                    <tr><b>Proposal ids</b> <br> {{ convertArray(porp[4])}}</tr>
+                </table>
+                
+            </el-card>
+        </div>
+      </div>
+    </el-card>
     <div v-for="(item, index) in feed.list" :key="index">
       <Post :doc="item" />
     </div>
@@ -172,16 +201,68 @@
 <script>
 import Post from './Post'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
+const ethereum = require('ethereumjs-utils');
 import { createPost } from '@/api/article'
 import { mapGetters } from 'vuex'
 import { categories, ministiries } from './data'
 const avatarPrefix = '?imageView2/1/w/80/h/80'
 const carouselPrefix = '?imageView2/2/h/440'
+const contract = 'Haal'
 
 export default {
   components: { Pagination, Post },
-  computed: mapGetters(['id_', 'avatar']),
+  computed: {
+    ...mapGetters(['id_', 'avatar', 'stealth']),
+    ...mapGetters("drizzle", [ "drizzleInstance"]),
+    ...mapGetters('contracts',['getContractData']),
+    
+     votesCount() {
+      return this.getContractData({
+        contract: contract,
+        method: "votesCount"
+      })
+    },
+    contractProposals (){            
+      return this.getContractData({
+          contract:contract,
+          method: 'getproposals'
+      })
+    },
+    web3() {
+      return this.drizzleInstance.web3;
+    },
+    ethAddress() {
+      return this.stealth ? '0x' + ethereum.privateToAddress(this.stealth.privKey).toString('hex') : '';
+    }
+  },
+  created() {
+      this.$store.dispatch('drizzle/REGISTER_CONTRACT', {
+          contractName: contract,
+          method:'getproposals',
+          methodArgs:[],
+      });
+      this.$store.dispatch('drizzle/REGISTER_CONTRACT', {
+          contractName: contract,
+          method:'votesCount',
+          methodArgs:[],
+      });
+  },
   methods: {
+    async getBalanced(){
+      let b = this.ethAddress !== '' ? await this.web3.eth.getBalance(this.ethAddress) : ''; 
+      console.log(b);
+      this.balance = b;
+      return b;
+    },
+    convertArray(arr){ 
+      let list = [];
+      let thiis = this;
+      arr?.forEach(e => list.push(thiis.convert(e)));
+      return list;
+    },
+    convert(byte32) {
+      return (typeof byte32 === 'undefined' || byte32 === '' || byte32 === '0x00') ? 'Empty content!' : this.drizzleInstance.web3.utils.hexToUtf8(byte32.toString(16))
+    },
     handleRemove(file, fileList) {
       console.log(file, fileList)
     },
@@ -198,9 +279,32 @@ export default {
         this.data.porpostions.splice(index, 1)
       }
     },
+    fromAscii(value) {
+            return this.drizzleInstance.web3.utils.utf8ToHex(value)
+    },
+    
     createPostMeth() {
+      // to blockchain
+      
+
+      //to server
       createPost(this.data).then((response) => {
-        console.log(response)
+
+        let porpostionsID = []
+        response.porpostions.forEach(element => {
+          porpostionsID.push(this.fromAscii(element._id))
+        });
+
+        console.log(`response id ${response.id}`)
+        console.log(`porpostions IDs ${porpostionsID}`)
+        if(response) {
+            
+          this.drizzleInstance
+            .contracts['Haal']
+            .methods['addProposals']
+            .cacheSend(this.fromAscii(response.id), porpostionsID)
+        }
+          
         // const createdBy = {
         //   id: this.id_,
         //   picture: this.avatar
@@ -239,6 +343,7 @@ export default {
   },
   data() {
     return {
+      getBalance: '',
       datePickerOptions: {
         disabledDate (newDate) {
           var date = new Date()
@@ -246,6 +351,8 @@ export default {
           return newDate < date
         }
       },
+      proposBt : [],
+      balance : '',
       seen: false,
       topMin: [{
         label: 'Topics',

@@ -9,10 +9,14 @@ const state = {
   avatar: '',
   email: '',
   id: '',
+  stealth: false,
   roles: []
 }
 
 const mutations = {
+  SET_STEALTH: (state, token) => {
+    state.stealth = token
+  },
   SET_TOKEN: (state, token) => {
     state.token = token
   },
@@ -65,7 +69,7 @@ const actions = {
           reject('Verification failed, please Login again.')
         }
 
-        const { email, name, id, createdAt, picture } = data
+        const { email, name, id, createdAt, picture, stealth } = data
 
         const roles = ['admin']
 
@@ -76,6 +80,7 @@ const actions = {
 
         commit('SET_CREATED', createdAt)
         commit('SET_ID', id)
+        commit('SET_STEALTH', stealth)
         commit('SET_ROLES', roles)
         commit('SET_NAME', name)
         commit('SET_AVATAR', picture)

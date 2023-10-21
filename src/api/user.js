@@ -25,6 +25,14 @@ export function followUser(data) {
   })
 }
 
+export function pushStealth(data) {
+  return request({
+    url: '/users/stealth',
+    method: 'post',
+    data
+  })
+}
+
 export function logout() {
   return request({
     url: '/vue-element-admin/user/logout',

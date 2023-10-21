@@ -1,6 +1,8 @@
 <template>
-  <div class="app-container dashboard">
+  <div v-if="isDrizzleInitialized" class="app-container dashboard" >
     <div v-if="user">
+      <button @click.prevent="initStealth()">Stealth Init</button>
+      
       <splitpanes split="vertical" style="padding: 0px 10%">
         <pane size="18" class="toolL" style="top: 50px;position: fixed;">
           <user-card :user="user" @sortChanged="sortChanged($event)" />
@@ -9,7 +11,7 @@
           <splitpanes horizontal>
             <pane>
               <div style="height: 300px; background-color: #373e4c;text-align: center;">
-                <span>Heloo</span>
+                <span>Heloo {{votersCounts}}</span>
               </div>
             </pane>
             <pane>
@@ -38,6 +40,9 @@
       </splitpanes>
     </div>
   </div>
+  <div v-else>
+    Loading...
+  </div>
 </template>
 
 <script>
@@ -49,13 +54,35 @@ import { mapGetters } from 'vuex'
 import Activity from '../profile/components/Activity'
 import Timeline from '../profile/components/Timeline'
 import { fetchListAll } from '@/api/article'
+import { pushStealth } from '@/api/user'
+
+
+const Stealth = require('stealth_eth')
+const coinkey =  require('coinkey')
+
+// you need to scan every transaction and look for the following:
+// 1. does the transaction contain an OP_RETURN?
+// 2. if yes, then extract the OP_RETURN
+// 3. is the OP_RETURN data a compressed public key (33 bytes)? 
+// 4. if yes, check if mine
+
+// generate two key pairs, can use CoinKey, bitcoinjs-lib, bitcore, etc
+var payloadKeyPair = coinkey.createRandom()
+var scanKeyPair = coinkey.createRandom()
+
+const contract = 'Haal'
+
 
 export default {
   name: 'Profile',
   components: { UserCard, Activity, Timeline, UserProfile, Splitpanes, Pane },
+  mounted() {
+    
+  },
   
   data() {
     return {
+      ewCount: 1,
       importanceOptions: [],
       calendarTypeOptions: [],
       sortOptions: [],
@@ -75,16 +102,99 @@ export default {
   },
   computed: {
     ...mapGetters([
+      'id_',
       'name',
       'avatar',
-      'roles'
-    ])
+      'roles',
+      'stealth'
+    ]),
+    ...mapGetters("drizzle", ["drizzleInstance", "isDrizzleInitialized"]),
+    ...mapGetters("contracts", ["getContractData"]),
+    votersCounts() {
+      return this.getContractData({
+        contract: contract,
+        method: "votersCount"
+      })
+    },
+    getEphemeralWallets() {
+      return !this.isDrizzleInitialized ? undefined :  this.getContractData({
+        contract: contract,
+        method: "getEphemeralWallets"
+      })
+    },
   },
   created() {
     this.getUser();
-    this.getListAll()
+    this.getListAll();
+    this.$store.dispatch('drizzle/REGISTER_CONTRACT', {
+            contractName: contract,
+            method:'votersCount',
+            methodArgs:[],
+        });
+    // this.$store.dispatch('drizzle/REGISTER_CONTRACT', {
+    //         contractName: contract,
+    //         method:'getEphemeralWallets',
+    //         methodArgs:['ewCount'],
+    //     });  
   },
+  mounted() {
+        //  if(!this.stealth) {
+        //   var stealth = new Stealth({
+        //     payloadPrivKey: payloadKeyPair.privateKey,
+        //     payloadPubKey: payloadKeyPair.publicKey,
+        //     scanPrivKey: scanKeyPair.privateKey,
+        //     scanPubKey: scanKeyPair.publicKey
+        //   })
+        //   pushStealth( Object.assign({}, {id: this.id_}, { token: stealth.toString() }))
+        //     .then(response => {
+        //       console.log(response)
+        //     })
+        //   console.log(stealth.toString())
+        // }else {
+        //   console.log('true')
+        // };
+        // this.initStealth(stealth)
+    },
   methods: {
+    async initStealth() {
+      if(!this.stealth) {
+          let ew, opMarkerBuffer, pubKeyToRecoverBuffer, keypair;
+          var stealth = new Stealth({
+            payloadPrivKey: payloadKeyPair.privateKey,
+            payloadPubKey: payloadKeyPair.publicKey,
+            scanPrivKey: scanKeyPair.privateKey,
+            scanPubKey: scanKeyPair.publicKey
+          })
+          var that = this;
+          pushStealth( Object.assign({}, {id: this.id_}, { token: stealth.toString() }))
+            .then( async (response) => {
+              console.log(response)
+              that.ewCount = that.votersCounts;
+              console.log(`counts: ${that.ewCount}`)
+                for (var i = 0; i < that.ewCount + 1; i++) {
+                    // ew =  this.drizzleInstance
+                    //         .contracts[contract]
+                    //         .methods['getEphemeralWallets'].cacheCall(i);
+
+                    ew = await this.drizzleInstance
+                            .contracts[contract]
+                            .methods.getEphemeralWallets(i).call();
+                      console.log("Ew was set to", ew);
+
+                    pubKeyToRecoverBuffer = Buffer.from(this.drizzleInstance.web3.utils.hexToAscii(ew[1]), 'hex');
+                    opMarkerBuffer = Buffer.from(ew[2].slice(2, 42), 'hex');          
+                    keypair = stealth.checkPaymentPubKeyHash(pubKeyToRecoverBuffer, opMarkerBuffer);
+                    console.log(`keypair: ${keypair}`)
+                    if (keypair != null) break;
+                }
+               if (keypair != null) {
+                  this.$store.commit('user/SET_STEALTH', keypair)
+                  console.log(`key pair found ! => ${keypair}`)
+                }
+            })
+        }
+      
+    },
     sortChanged(sortObject) {
       this.listQuery = Object.assign(this.listQuery, sortObject);
       this.getListAll()
