@@ -11,7 +11,7 @@
           <splitpanes horizontal>
             <pane>
               <div style="height: 300px; background-color: #373e4c;text-align: center;">
-                <span>Heloo {{votersCounts}}</span>
+                <span>Hello {{votersCounts}}</span>
               </div>
             </pane>
             <pane>
