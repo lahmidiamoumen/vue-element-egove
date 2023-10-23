@@ -1,4 +1,4 @@
-import Haal from '../../eGov/build/contracts/Haal.json'
+import Haal from '../../brightGove-back/build/contracts/Haal.json'
 
 const options = {
   web3: {

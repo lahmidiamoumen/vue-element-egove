@@ -67,8 +67,10 @@ const coinkey =  require('coinkey')
 // 4. if yes, check if mine
 
 // generate two key pairs, can use CoinKey, bitcoinjs-lib, bitcore, etc
-var payloadKeyPair = coinkey.createRandom()
-var scanKeyPair = coinkey.createRandom()
+var payloadKeyPair = coinkey.createRandom();
+var scanKeyPair = coinkey.createRandom();
+
+console.log(payloadKeyPair);
 
 const contract = 'Haal'
 

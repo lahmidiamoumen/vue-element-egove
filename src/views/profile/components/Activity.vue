@@ -3,7 +3,7 @@
     <el-card v-if="isHome" shadow="never" class="box-shadow">
       <div class="post">
         <div class="user-block">
-          <img class="img-circle" :src="avatar+avatarPrefix">
+          <img class="img-circle" :src="avatar + avatarPrefix">
           <span class="username text-muted">{{ id_ }}</span>
           <span class="description">Create new proposal</span>
         </div>
@@ -11,62 +11,38 @@
         <div v-if="!seen" class="footer-post">
           <el-button type="text" @click="seen = !seen">Create new post</el-button>
         </div>
-        
+
         <el-collapse-transition>
           <el-form v-show="seen" ref="form" :model="data" :inline="false" size="normal">
             <el-form-item style="margin: 6px 20px">
               <label class="description" style="font-weight: bold;font-size: 14px;">Tile</label>
-              <el-input v-model="data.title" type="textarea" rows="2" placeholder="Words Are More Powerful Than Any Weapon You Can Buy..." />
+              <el-input v-model="data.title" type="textarea" rows="2"
+                placeholder="Words Are More Powerful Than Any Weapon You Can Buy..." />
             </el-form-item>
             <el-form-item style="margin: 6px 20px">
               <label class="description" style="font-weight: bold;font-size: 14px;">Abstract</label>
-              <el-input v-model="data.abstract" type="textarea" rows="4" placeholder="Words Are More Powerful Than Any Weapon You Can Buy..." />
+              <el-input v-model="data.abstract" type="textarea" rows="4"
+                placeholder="Words Are More Powerful Than Any Weapon You Can Buy..." />
             </el-form-item>
             <el-form-item style="margin: 6px 20px">
               <label class="description" style="font-weight: bold;font-size: 14px;">Description</label>
-              <el-input v-model="data.desc" type="textarea" rows="6" placeholder="Words Are More Powerful Than Any Weapon You Can Buy..." />
+              <el-input v-model="data.desc" type="textarea" rows="6"
+                placeholder="Words Are More Powerful Than Any Weapon You Can Buy..." />
             </el-form-item>
             <el-form-item label="Topics" label-width="100px" size="small" style="margin-top: 22px">
-              <el-select
-                v-model="data.topics"
-                size="larg"
-                style="width: 85%"
-                filterable
-                collapse-tags
-                placeholder="Select Topic of intrest"
-              >
-                <el-option-group
-                  v-for="group in topMin"
-                  :key="group.label"
-                  :label="group.label"
-                >
-                  <el-option
-                    v-for="item in group.options"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
-                  />
+              <el-select v-model="data.topics" size="larg" style="width: 85%" filterable collapse-tags
+                placeholder="Select Topic of intrest">
+                <el-option-group v-for="group in topMin" :key="group.label" :label="group.label">
+                  <el-option v-for="item in group.options" :key="item.value" :label="item.label" :value="item.value" />
                 </el-option-group>
               </el-select>
 
             </el-form-item>
 
             <el-form-item label="Key words" label-width="100px" size="small">
-              <el-select
-                v-model="data.keyWord"
-                size="default"
-                style="width: 85%"
-                multiple
-                filterable
-                allow-create
-                placeholder="Add tags for your article"
-              >
-                <el-option
-                  v-for="item in categories"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                />
+              <el-select v-model="data.keyWord" size="default" style="width: 85%" multiple filterable allow-create
+                placeholder="Add tags for your article">
+                <el-option v-for="item in categories" :key="item.value" :label="item.label" :value="item.value" />
               </el-select>
             </el-form-item>
             <div style="margin:7px;margin-left: 40px">
@@ -76,16 +52,9 @@
             </div>
 
             <div style="margin: 0 auto">
-              <el-upload
-                class="upload-demo"
-                style="margin: 20px 12px;"
-                drag
-                action="https://jsonplaceholder.typicode.com/posts/"
-                :on-preview="handlePreview"
-                :on-remove="handleRemove"
-                :file-list="data.fileList"
-                multiple
-              >
+              <el-upload class="upload-demo" style="margin: 20px 12px;" drag
+                action="https://jsonplaceholder.typicode.com/posts/" :on-preview="handlePreview" :on-remove="handleRemove"
+                :file-list="data.fileList" multiple>
                 <i class="el-icon-upload" />
                 <div class="el-upload__text">Drop file here or <em>click to upload</em></div>
                 <div slot="tip" class="el-upload__tip">jpg/png files with a size less than 500kb</div>
@@ -94,74 +63,73 @@
 
             <el-collapse style="margin-bottom: 12px;margin-right: 20px;">
               <el-collapse-item title="Customize voting" name="1">
-                <div style="margin: 10px 50px;padding: 30px; box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.1);margin-right: 80px; border-radius: 4px">
-                  <div v-for="(con, index) in data.porpostions" :key="index+'_'+con.key">
+                <div
+                  style="margin: 10px 50px;padding: 30px; box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.1);margin-right: 80px; border-radius: 4px">
+                  <div v-for="(con, index) in data.porpostions" :key="index + '_' + con.key">
                     <el-row style="padding: 4px 0px" :gutter="6">
                       <el-col :span="20">
-                        <el-input v-model="con.text" :placeholder=" 'Poroposal suggestion ' +(index + 1) + '...'" size="small" clearable />
+                        <el-input v-model="con.text" :placeholder="'Poroposal suggestion ' + (index + 1) + '...'"
+                          size="small" clearable />
                       </el-col>
                       <el-col :span="2">
-                        <el-button type="danger" icon="el-icon-delete" size="small" :disabled="index < 2" @click="removeOption(index)" />
+                        <el-button type="danger" icon="el-icon-delete" size="small" :disabled="index < 2"
+                          @click="removeOption(index)" />
                       </el-col>
                     </el-row>
                   </div>
 
                   <div style="display: grid">
-                    <el-button type="text" size="small" icon="el-icon-plus" style="margin-top: 6px; padding: 8px;grid-area: last-line / 9;" plain @click="addOption(index)">
+                    <el-button type="text" size="small" icon="el-icon-plus"
+                      style="margin-top: 6px; padding: 8px;grid-area: last-line / 9;" plain @click="addOption(index)">
                       Add new vote option
                     </el-button>
 
                     <el-form-item style="margin-bottom: 2px;margin-right: 20px">
                       <label for="" class="description" style="font-weight: 300; margin-right: 8px">Deadline</label>
-                      <el-date-picker
-                        
-                        v-model="data.endAt"
-                        size="small"
-                        type="date"
-                        placeholder="Pick a day"
-                      />
+                      <el-date-picker v-model="data.endAt" size="small" type="date" placeholder="Pick a day" />
                     </el-form-item>
                   </div>
                 </div>
               </el-collapse-item>
             </el-collapse>
             <el-form-item>
-              <el-button style="float: right;margin-right: 20px" type="primary" size="small" @click="createPostMeth">Submit</el-button>
+              <el-button style="float: right;margin-right: 20px" type="primary" size="small"
+                @click="createPostMeth">Submit</el-button>
             </el-form-item>
-          <div v-if="seen" class="footer-post">
-            <el-button type="text" @click="seen = !seen">Hide</el-button>
-          </div>
+            <div v-if="seen" class="footer-post">
+              <el-button type="text" @click="seen = !seen">Hide</el-button>
+            </div>
           </el-form>
         </el-collapse-transition>
-        
+
       </div>
     </el-card>
- 
-    <el-card  shadow="never" class="box-shadow">
+
+    <el-card shadow="never" class="box-shadow">
       <div class="post">
-         <b>Votes Count: </b>  {{votesCount}} <br>
-          <b> Stealth Account Blance: </b> {{ balance }} <br>
-          <b>Stealth Account Hash: </b> {{ ethAddress }}
-          <span style="visibility: hidden;">{{getBalanced()}}</span>
+        <b>Votes Count: </b> {{ votesCount }} <br>
+        <b> Stealth Account Blance: </b> {{ balance }} <br>
+        <b>Stealth Account Hash: </b> {{ ethAddress }}
+        <span style="visibility: hidden;">{{ getBalanced() }}</span>
       </div>
     </el-card>
     <el-card class="box-shadow">
-      <div class="post"> 
-          <div v-for="(porp,index) in contractProposals" :key="index">
-            <br>
-            
-            <el-card shadow="hover"  :body-style="{ padding: '20px' }">
-                <div slot="header">
-                    <span><b>Creator</b> {{porp[0]}}</span>
-                </div>
-                <table>
-                    <tr> <b>Vote text keys</b> <br> {{ convertArray(porp[1]) }}</tr>
-                    <tr> <b>Vote Count</b> <br> {{porp[2]}}</tr>
-                    <tr><b>Post ID </b> <br> {{ convert(porp[3])}}</tr>
-                    <tr><b>Proposal ids</b> <br> {{ convertArray(porp[4])}}</tr>
-                </table>
-                
-            </el-card>
+      <div class="post">
+        <div v-for="(porp, index) in contractProposals" :key="index">
+          <br>
+
+          <el-card shadow="hover" :body-style="{ padding: '20px' }">
+            <div slot="header">
+              <span><b>Creator</b> {{ porp[0] }}</span>
+            </div>
+            <table>
+              <tr> <b>Vote text keys</b> <br> {{ convertArray(porp[1]) }}</tr>
+              <tr> <b>Vote Count</b> <br> {{ porp[2] }}</tr>
+              <tr><b>Post ID </b> <br> {{ convert(porp[3]) }}</tr>
+              <tr><b>Proposal ids</b> <br> {{ convertArray(porp[4]) }}</tr>
+            </table>
+
+          </el-card>
         </div>
       </div>
     </el-card>
@@ -174,14 +142,14 @@
 
     <div class="post">
       <div class="user-block">
-        <img class="img-circle" :src="'https://wpimg.wallstcn.com/fb57f689-e1ab-443c-af12-8d4066e202e2.jpg'+avatarPrefix">
+        <img class="img-circle" :src="'https://wpimg.wallstcn.com/fb57f689-e1ab-443c-af12-8d4066e202e2.jpg' + avatarPrefix">
         <span class="username">Spider Man</span>
         <span class="description">Posted 4 photos - 2 days ago</span>
       </div>
       <div class="user-images">
         <el-carousel :interval="6000" type="card" height="220px">
           <el-carousel-item v-for="item in carouselImages" :key="item">
-            <img :src="item+carouselPrefix" class="image">
+            <img :src="item + carouselPrefix" class="image">
           </el-carousel-item>
         </el-carousel>
       </div>
@@ -194,7 +162,8 @@
       </ul>
     </div>
 
-    <pagination v-show="feed.total>0" :total="feed.total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getListAll" />
+    <pagination v-show="feed.total > 0" :total="feed.total" :page.sync="listQuery.page" :limit.sync="listQuery.limit"
+      @pagination="getListAll" />
   </div>
 </template>
 
@@ -213,19 +182,19 @@ export default {
   components: { Pagination, Post },
   computed: {
     ...mapGetters(['id_', 'avatar', 'stealth']),
-    ...mapGetters("drizzle", [ "drizzleInstance"]),
-    ...mapGetters('contracts',['getContractData']),
-    
-     votesCount() {
+    ...mapGetters("drizzle", ["drizzleInstance"]),
+    ...mapGetters('contracts', ['getContractData']),
+
+    votesCount() {
       return this.getContractData({
         contract: contract,
         method: "votesCount"
       })
     },
-    contractProposals (){            
+    contractProposals() {
       return this.getContractData({
-          contract:contract,
-          method: 'getproposals'
+        contract: contract,
+        method: 'getproposals'
       })
     },
     web3() {
@@ -236,25 +205,25 @@ export default {
     }
   },
   created() {
-      this.$store.dispatch('drizzle/REGISTER_CONTRACT', {
-          contractName: contract,
-          method:'getproposals',
-          methodArgs:[],
-      });
-      this.$store.dispatch('drizzle/REGISTER_CONTRACT', {
-          contractName: contract,
-          method:'votesCount',
-          methodArgs:[],
-      });
+    this.$store.dispatch('drizzle/REGISTER_CONTRACT', {
+      contractName: contract,
+      method: 'getproposals',
+      methodArgs: [],
+    });
+    this.$store.dispatch('drizzle/REGISTER_CONTRACT', {
+      contractName: contract,
+      method: 'votesCount',
+      methodArgs: [],
+    });
   },
   methods: {
-    async getBalanced(){
-      let b = this.ethAddress !== '' ? await this.web3.eth.getBalance(this.ethAddress) : ''; 
+    async getBalanced() {
+      let b = this.ethAddress !== '' ? await this.web3.eth.getBalance(this.ethAddress) : '';
       console.log(b);
       this.balance = b;
       return b;
     },
-    convertArray(arr){ 
+    convertArray(arr) {
       let list = [];
       let thiis = this;
       arr?.forEach(e => list.push(thiis.convert(e)));
@@ -280,12 +249,12 @@ export default {
       }
     },
     fromAscii(value) {
-            return this.drizzleInstance.web3.utils.utf8ToHex(value)
+      return this.drizzleInstance.web3.utils.utf8ToHex(value)
     },
-    
+
     createPostMeth() {
       // to blockchain
-      
+
 
       //to server
       createPost(this.data).then((response) => {
@@ -297,14 +266,14 @@ export default {
 
         console.log(`response id ${response.id}`)
         console.log(`porpostions IDs ${porpostionsID}`)
-        if(response) {
-            
+        if (response) {
+
           this.drizzleInstance
             .contracts['Haal']
             .methods['addProposals']
             .cacheSend(this.fromAscii(response.id), porpostionsID)
         }
-          
+
         // const createdBy = {
         //   id: this.id_,
         //   picture: this.avatar
@@ -322,14 +291,14 @@ export default {
       //   this.total = Number.isNaN(parseInt(response.count)) ? 0 : parseInt(response.count)
       //   this.listLoading = false
       // })
-      this.$emit('paginationGanged',this.listQuery);
+      this.$emit('paginationGanged', this.listQuery);
     }
   },
   props: {
-    isHome: {type: Boolean , default: false},
-    unvoted: {type: Boolean , default: false},
-    voted: {type: Boolean , default: false},
-    following: {type: Boolean , default: false},
+    isHome: { type: Boolean, default: false },
+    unvoted: { type: Boolean, default: false },
+    voted: { type: Boolean, default: false },
+    following: { type: Boolean, default: false },
     feed: {
       type: Object,
       default: () => {
@@ -345,14 +314,14 @@ export default {
     return {
       getBalance: '',
       datePickerOptions: {
-        disabledDate (newDate) {
+        disabledDate(newDate) {
           var date = new Date()
           date.setDate(date.getDate() - 1);
           return newDate < date
         }
       },
-      proposBt : [],
-      balance : '',
+      proposBt: [],
+      balance: '',
       seen: false,
       topMin: [{
         label: 'Topics',
@@ -376,7 +345,7 @@ export default {
         endAt: undefined,
         porpostions: [{ kye: 12222, text: 'Yes' }, { kye: 123312, text: 'No' }]
       },
-      
+
       listQuery: {
         page: 1,
         limit: 20,
@@ -398,8 +367,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
-.footer-post{
+.footer-post {
   text-align: center;
   border-top: 1px solid rgb(221, 221, 221);
   margin-top: 20px;
@@ -419,6 +387,7 @@ export default {
 .el-upload-dragger .el-upload {
   width: 100% !important;
 }
+
 .user-activity {
   .user-block {
 
@@ -429,7 +398,7 @@ export default {
       padding: 2px 0;
     }
 
-    .username{
+    .username {
       font-size: 16px;
       color: #000;
     }
@@ -459,7 +428,7 @@ export default {
     color: #050505;
     font-size: .9375rem;
     word-wrap: break-word;
-        line-height: 1.3333;
+    line-height: 1.3333;
 
     .image {
       width: 100%;
