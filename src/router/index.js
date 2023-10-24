@@ -35,6 +35,7 @@ export const constantRoutes = [
   {
     path: '/redirect',
     component: Layout,
+    name: 'redirectFullParent',
     hidden: true,
     children: [
       {
@@ -45,21 +46,25 @@ export const constantRoutes = [
   },
   {
     path: '/login',
+    name: 'loginParent',
     component: () => import('@/views/login/index'),
     hidden: true
   },
   {
     path: '/auth-redirect',
+    name: 'authRedurectParent',
     component: () => import('@/views/login/auth-redirect'),
     hidden: true
   },
   {
     path: '/404',
+    name: '404Parent',
     component: () => import('@/views/error-page/404'),
     hidden: true
   },
   {
     path: '/401',
+    name: '401Parent',
     component: () => import('@/views/error-page/401'),
     hidden: true
   },
@@ -67,6 +72,7 @@ export const constantRoutes = [
     path: '/',
     component: Layout,
     redirect: '/dashboard',
+    name: 'dashoardParent',
     children: [
       {
         path: 'feed',
@@ -90,6 +96,7 @@ export const constantRoutes = [
   // },
   {
     path: '/profile',
+    name: 'proffileParent',
     component: Layout,
     children: [
       {
@@ -135,6 +142,7 @@ export const asyncRoutes = [
   {
     path: '/error-log',
     component: Layout,
+    name: 'ErrorLogs',
     children: [
       {
         path: 'log',
@@ -145,7 +153,7 @@ export const asyncRoutes = [
     ]
   },
   // 404 page must be placed at the end !!!
-  { path: '*', redirect: '/404', hidden: true }
+  { path: '*', name: 'rest-404', redirect: '/404', hidden: true }
 ]
 
 const createRouter = () => new Router({
