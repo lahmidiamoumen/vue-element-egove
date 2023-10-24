@@ -48,18 +48,18 @@
       <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">Login</el-button>
 
       <div style="position:relative">
-        <div class="tips">
+        <!-- <div class="tips">
           <span>Username : admin</span>
           <span>Password : any</span>
-        </div>
-        <div class="tips">
+        </div> -->
+        <!-- <div class="tips">
           <span style="margin-right:18px;">Username : editor</span>
           <span>Password : any</span>
         </div>
 
         <el-button class="thirdparty-button" type="primary" @click="showDialog=true">
           Or connect with
-        </el-button>
+        </el-button> -->
       </div>
     </el-form>
 
@@ -74,7 +74,7 @@
 </template>
 
 <script>
-import { validUsername } from '@/utils/validate'
+// import { validUsername } from '@/utils/validate'
 import SocialSign from './components/SocialSignin'
 
 export default {
@@ -224,7 +224,7 @@ $cursor: #fff;
     input {
       background: transparent;
       border: 0px;
-      -webkit-appearance: none;
+      appearance: none;
       border-radius: 0px;
       padding: 12px 5px 12px 15px;
       color: $light_gray;
