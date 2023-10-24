@@ -5,7 +5,6 @@ import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css' // progress bar style
 import { getToken } from '@/utils/auth' // get token from cookie
 import getPageTitle from '@/utils/get-page-title'
-// import Router from 'vue-router'
 
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
@@ -29,6 +28,9 @@ router.beforeEach(async(to, from, next) => {
     } else {
       // determine whether the user has obtained his permission roles through getInfo
       const hasRoles = store.getters.roles && store.getters.roles.length > 0
+
+      console.log(store.getters.roles)
+
       if (hasRoles) {
         next()
       } else {
@@ -38,10 +40,10 @@ router.beforeEach(async(to, from, next) => {
           // let roles = await store.dispatch('user/getInfo')
           // const roles = ['admin']
           // generate accessible routes map based on roles
-          // const accessRoutes = await store.dispatch('permission/generateRoutes', ['admin'])
+          const accessRoutes = await store.dispatch('permission/generateRoutes', ['admin'])
 
           // dynamically add accessible routes
-          // router.addRoutes(accessRoutes)
+          router.addRoutes(accessRoutes)
 
           // hack method to ensure that addRoutes is complete
           // set the replace: true, so the navigation will not leave a history record
