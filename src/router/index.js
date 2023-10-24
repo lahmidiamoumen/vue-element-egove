@@ -55,13 +55,11 @@ export const constantRoutes = [
   },
   {
     path: '/404',
-    name: 'Error404',
     component: () => import('@/views/error-page/404'),
     hidden: true
   },
   {
     path: '/401',
-    name: 'Error401',
     component: () => import('@/views/error-page/401'),
     hidden: true
   },
@@ -73,7 +71,6 @@ export const constantRoutes = [
       {
         path: 'dashboard',
         component: () => import('@/views/dashboard/index'),
-        name: 'Dashboard',
         meta: { title: 'Dashboard', icon: 'dashboard', affix: true }
       }
     ]
@@ -85,7 +82,6 @@ export const constantRoutes = [
       {
         path: 'index',
         component: () => import('@/views/tab/index'),
-        name: 'Wall',
         meta: { title: 'Wall', icon: 'tab' }
       }
     ]
@@ -97,7 +93,6 @@ export const constantRoutes = [
       {
         path: ':id(\\w+)',
         component: () => import('@/views/profile/index'),
-        name: 'Profile',
         meta: { title: 'Profile', icon: 'user', noCache: true }
       }
     ]
@@ -113,7 +108,6 @@ export const asyncRoutes = [
     path: '/error',
     component: Layout,
     redirect: 'noRedirect',
-    name: 'ErrorPages',
     meta: {
       title: 'Error Pages',
       icon: '404'
@@ -122,13 +116,11 @@ export const asyncRoutes = [
       {
         path: '401',
         component: () => import('@/views/error-page/401'),
-        name: 'Page401',
         meta: { title: '401', noCache: true }
       },
       {
         path: '404',
         component: () => import('@/views/error-page/404'),
-        name: 'Page404',
         meta: { title: '404', noCache: true }
       }
     ]
@@ -141,7 +133,6 @@ export const asyncRoutes = [
       {
         path: 'log',
         component: () => import('@/views/error-log/index'),
-        name: 'ErrorLog',
         meta: { title: 'Error Log', icon: 'bug' }
       }
     ]
