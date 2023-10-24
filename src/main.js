@@ -6,7 +6,6 @@ import 'normalize.css/normalize.css' // a modern alternative to CSS resets
 
 import VueTimeago from 'vue-timeago'
 
-
 import Element from 'element-ui'
 import './styles/element-variables.scss'
 import enLang from 'element-ui/lib/locale/lang/en'// 如果使用中文语言包请默认支持，无需额外引入，请删除该依赖
@@ -21,7 +20,6 @@ import './icons' // icon
 import './permission' // permission control
 import './utils/error-log' // error log
 import * as filters from './filters' // global filters
-
 
 import drizzleVuePlugin from '@drizzle/vue-plugin'
 import drizzleOptions from './drizzleOptions'
@@ -41,7 +39,7 @@ Vue.use(drizzleVuePlugin, { store, drizzleOptions })
 
 Vue.use(VueTimeago, {
   name: 'Timeago', // Component name, `Timeago` by default
-  locale: 'en', // Default locale
+  locale: 'en' // Default locale
 })
 
 Vue.use(Element, {
