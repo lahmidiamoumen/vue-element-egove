@@ -47,7 +47,7 @@ const actions = {
     return new Promise((resolve, reject) => {
       login({ username: username.trim(), password: password }).then(response => {
         const data = response
-        const token = 'Bearer ' + data.token
+        const token = `Bearer ${data.token}`
 
         commit('SET_TOKEN', token)
         setToken(token)
@@ -63,7 +63,6 @@ const actions = {
     return new Promise((resolve, reject) => {
       getInfo().then(response => {
         const data = response
-        console.log(data)
 
         if (!data) {
           reject('Verification failed, please Login again.')
@@ -74,9 +73,9 @@ const actions = {
         const roles = ['admin']
 
         // roles must be a non-empty array
-        if (!roles || roles.length <= 0) {
-          reject('getInfo: roles must be a non-null array!')
-        }
+        // if (!roles || roles.length <= 0) {
+        //   reject('getInfo: roles must be a non-null array!')
+        // }
 
         commit('SET_CREATED', createdAt)
         commit('SET_ID', id)
