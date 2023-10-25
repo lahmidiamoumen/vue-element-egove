@@ -220,22 +220,23 @@ export default {
       console.log(`EthStealth Address ${ethAddress}`)
       console.log(`account balance ${await contract.methods.balanceOf(ethAddress).call()}`)
 
-      const rawTx = {
-        // nonce: this.web3.utils.toHex(this.web3.eth.getTransactionCount(ethAddress, 'pending')),
-        nonce: this.web3.utils.toHex(await this.web3.eth.getTransactionCount(ethAddress)),
-        from: ethAddress,
-        to: haalAddress,
-        gasPrice: this.web3.utils.toHex(this.web3.utils.toWei('6', 'gwei')),
-        gasLimit: this.web3.utils.toHex('10000'),
-        gas: estimateGas2,
-        data: encodedABI
-      }
-
-      const unsignedTx = new Tx(rawTx)
-      unsignedTx.sign(privateKey)
-
-      const serializedTx = unsignedTx.serialize()
       try {
+        const trasnCount = await this.web3.eth.getTransactionCount(ethAddress)
+        const rawTx = {
+          // nonce: this.web3.utils.toHex(this.web3.eth.getTransactionCount(ethAddress, 'pending')),
+          nonce: this.web3.utils.toHex(trasnCount),
+          from: ethAddress,
+          to: haalAddress,
+          gasPrice: this.web3.utils.toHex(this.web3.utils.toWei('6', 'gwei')),
+          gasLimit: this.web3.utils.toHex('10000'),
+          gas: estimateGas2,
+          data: encodedABI
+        }
+
+        const unsignedTx = new Tx(rawTx)
+        unsignedTx.sign(privateKey)
+
+        const serializedTx = unsignedTx.serialize()
         const tx = await this.web3.eth.sendSignedTransaction('0x' + serializedTx.toString('hex'))
         const thiis = this
         console.log(`Transaction Hash ${tx.transactionHash}`)
