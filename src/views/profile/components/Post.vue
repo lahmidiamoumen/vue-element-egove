@@ -4,44 +4,44 @@
       <div class="user-block">
         <img class="img-circle" :src="doc.createdBy.picture+avatarPrefix">
         <span class="username text-muted">
-           <router-link :to="'/profile/'+doc.createdBy.id" class="link-type">
+          <router-link :to="'/profile/'+doc.createdBy.id" class="link-type">
             <span>{{ doc.createdBy.id }}</span>
           </router-link>
-          <span class="text-muted" style="margin: 0 8px;">&bull; {{votersCounts}}</span>
+          <span class="text-muted" style="margin: 0 8px;">&bull; {{ votersCounts }}</span>
           <el-button v-show="doc.follow" class="link-type" type="text" @click="follow(doc.createdBy.id)">follow</el-button>
 
         </span>
 
-        <span class="description">Shared publicly - <timeago :datetime="doc.createdAt" :auto-update="60"></timeago></span>
+        <span class="description">Shared publicly - <timeago :datetime="doc.createdAt" :auto-update="60" /></span>
       </div>
       <h1>
-        {{ doc.title }} 
+        {{ doc.title }}
       </h1>
       <p style="margin-bottom: 2px;font-size: 14px;font-weight: 500;line-height: 1.428571429;letter-spacing: 0.6px;">
         {{ doc.abstract }}
       </p>
-      
+
       <div style="transition-timing-function: ease;">
-        <el-button v-show="!contunie && doc.desc " type="text" style="color: gray" v-on:click="contunie = !contunie">Show more</el-button>
+        <el-button v-show="!contunie && doc.desc " type="text" style="color: gray" @click="contunie = !contunie">Show more</el-button>
         <p v-show="contunie" style="font-size: 14px;line-height: 1.428571429;letter-spacing: 0.6px;">
           {{ doc.desc }}
-          <el-button type="text" v-on:click="contunie = !contunie" style="display: block;color: gray">Show lesse</el-button>
+          <el-button type="text" style="display: block;color: gray" @click="contunie = !contunie">Show lesse</el-button>
         </p>
-      </div>  
+      </div>
       <div class="" style="padding: 8px 20px; padding-bottom: 40px;max-width: 450px;">
         <div class="">
-          <el-radio-group v-if="doc.porpostions" v-model="radio"  style="width: 100%" size="mini">
-            <el-radio border v-for="item in doc.porpostions" :key="item._id" :label="item._id" style="display: block; margin: 8px 8px; width: 100%;" :style=" {background: createVoteProgress(item) }"  size="small">
+          <el-radio-group v-if="doc.porpostions" v-model="radio" style="width: 100%" size="mini">
+            <el-radio v-for="item in doc.porpostions" :key="item._id" border :label="item._id" style="display: block; margin: 8px 8px; width: 100%;" :style=" {background: createVoteProgress(item) }" size="small">
               <span>{{ item.text }}</span>
               <!-- <el-progress :percentage="18" /> -->
             </el-radio>
           </el-radio-group>
         </div>
-        <span v-if="doc.voted !== undefined" style="float: right; margin: 6px 0px;padding: 6px 0px;color: gray;font-size: 12px;"> <span style="margin: 0 8px;">&bull;</span> Voted <timeago  :datetime="doc.voted.votedate" :auto-update="60"></timeago> </span>
-        
+        <span v-if="doc.voted !== undefined" style="float: right; margin: 6px 0px;padding: 6px 0px;color: gray;font-size: 12px;"> <span style="margin: 0 8px;">&bull;</span> Voted <timeago :datetime="doc.voted.votedate" :auto-update="60" /> </span>
+
         <el-button v-else v-show="!doc.endAt || new Date(doc.endAt) - new Date() > 0" type="text" style="float: right; margin: 6px 0px;padding: 6px 16px;margin-left: 8px" plain :disabled="!radio" :loading="loading" @click="onVote(doc.id)">Vote</el-button>
-        <span v-show="doc.endAt" style="float: right; margin: 6px 0px;padding: 6px 0px;color: gray;font-size: 12px;"><span style="margin: 0 8px;">&bull;</span>{{getDeffrence(doc.endAt)}} </span>
-        <span style="float: right; margin: 6px 0px;padding: 6px 0px;color: gray;font-size: 12px;"> {{doc.voteCount}}  votes </span>
+        <span v-show="doc.endAt" style="float: right; margin: 6px 0px;padding: 6px 0px;color: gray;font-size: 12px;"><span style="margin: 0 8px;">&bull;</span>{{ getDeffrence(doc.endAt) }} </span>
+        <span style="float: right; margin: 6px 0px;padding: 6px 0px;color: gray;font-size: 12px;"> {{ doc.voteCount }}  votes </span>
       </div>
 
       <!-- <ul v-else class="list-inline">
@@ -70,33 +70,17 @@
 
 <script>
 const avatarPrefix = '?imageView2/1/w/80/h/80'
-import { votePost } from '@/api/article'
 import { followUser } from '@/api/user'
 import { mapGetters } from 'vuex'
 const Tx = require('ethereumjs-tx')
-const ethereum = require('ethereumjs-utils');
+const ethereum = require('ethereumjs-utils')
 
 const contract = 'Haal'
-const minABI = [  
-  // balanceOf
-  {    
-    constant: true,
-
-    inputs: [{ name: "_owner", type: "address" }],
-
-    name: "balanceOf",
-
-    outputs: [{ name: "balance", type: "uint256" }],
-
-    type: "function",
-  },
-
-];
 export default {
   name: 'Post',
   props: {
-    doc: { type: Object, default: () => ({}) },
-    //keypair: {type: Object, default: () => ({ privKey: '' })}
+    doc: { type: Object, default: () => ({}) }
+    // keypair: {type: Object, default: () => ({ privKey: '' })}
   },
   data() {
     return {
@@ -107,73 +91,67 @@ export default {
       carouselImages: 'https://wpimg.wallstcn.com/9679ffb0-9e0b-4451-9916-e21992218054.jpg'
     }
   },
+  computed: {
+    ...mapGetters('drizzle', ['drizzleInstance']),
+    ...mapGetters(['stealth']),
+    ...mapGetters('contracts', ['getContractData']),
+    votersCounts() {
+      return this.getContractData({
+        contract: contract,
+        method: 'votesCount'
+      })
+    },
+
+    web3() {
+      return this.drizzleInstance.web3
+    }
+  },
   created() {
-        // this.$store.dispatch('drizzle/REGISTER_CONTRACT', {
-        //     contractName: contract,
-        //     method:'getproposals',
-        //     methodArgs:[],
-        // });
-        this.$store.dispatch('drizzle/REGISTER_CONTRACT', {
-            contractName: contract,
-            method:'votesCount',
-            methodArgs:[],
-        });
-       
-    },
-    
-    computed:{
-        ...mapGetters("drizzle", ["drizzleInstance"]),
-        ...mapGetters(['stealth']),
-        ...mapGetters("contracts", ["getContractData"]),
-          votersCounts() {
-            return this.getContractData({
-              contract: contract,
-              method: "votesCount"
-            })
-          },
-          
-        web3() {
-          return this.drizzleInstance.web3;
-        }
-    },
+    // this.$store.dispatch('drizzle/REGISTER_CONTRACT', {
+    //     contractName: contract,
+    //     method:'getproposals',
+    //     methodArgs:[],
+    // });
+    this.$store.dispatch('drizzle/REGISTER_CONTRACT', {
+      contractName: contract,
+      method: 'votesCount',
+      methodArgs: []
+    })
+  },
+
   methods: {
-    follow(id){
-      followUser({userId: id}).then((response) => {
+    follow(id) {
+      followUser({ userId: id }).then((response) => {
         console.log(response)
       }).catch(() => {})
     },
     getDeffrence(date_future) {
       // get total seconds between the times
-      date_future = new Date(date_future);
-      if(!date_future)
-       return '';
-      var date_now = new Date();
+      date_future = new Date(date_future)
+      if (!date_future) { return '' }
+      var date_now = new Date()
 
-      if(date_future - date_now < 0)
-        return 'Vote ended';
-      var delta = Math.abs(date_future - date_now) / 1000;
+      if (date_future - date_now < 0) { return 'Vote ended' }
+      var delta = Math.abs(date_future - date_now) / 1000
 
       // calculate (and subtract) whole days
-      var days = Math.floor(delta / 86400);
+      var days = Math.floor(delta / 86400)
 
-      if(days > 5)
-        return `${days} days left`;
-      delta -= days * 86400;
+      if (days > 5) { return `${days} days left` }
+      delta -= days * 86400
 
       // calculate (and subtract) whole hours
-      var hours = Math.floor(delta / 3600) % 24;
-      if(hours > 1)
-        return `${hours} hours left`;
-      delta -= hours * 3600;
+      var hours = Math.floor(delta / 3600) % 24
+      if (hours > 1) { return `${hours} hours left` }
+      delta -= hours * 3600
 
       // calculate (and subtract) whole minutes
-      var minutes = Math.floor(delta / 60) % 60;
-      if(minutes > 1)
-        return `${minutes} minutes left`;
-      return `less than a minute`;
+      var minutes = Math.floor(delta / 60) % 60
+      if (minutes > 1) { return `${minutes} minutes left` }
+      return `less than a minute`
     },
     createVoteProgress(item) {
-      return item.voteCount === 0 ? '' : `linear-gradient(to right, #e8f4ff ${item.voteCount/this.doc.voteCount*100}%, white 0%)`;
+      return item.voteCount === 0 ? '' : `linear-gradient(to right, #e8f4ff ${item.voteCount / this.doc.voteCount * 100}%, white 0%)`
     },
     togle() {
       this.contunie === !this.contunie
@@ -185,34 +163,31 @@ export default {
       // console.log({postId: post})
       // console.log({votedOn: this.radio})
       // console.log({userid: this.id_})
-     //this.loading = true;
+      // this.loading = true;
 
-     let haal = this.drizzleInstance.contracts[contract];
-     let haalAddress = haal.address;
-     let ethAddress = this.stealth ? '0x' + ethereum.privateToAddress(this.stealth.privKey).toString('hex') : null;
+      const haal = this.drizzleInstance.contracts[contract]
+      const haalAddress = haal.address
+      const ethAddress = this.stealth ? '0x' + ethereum.privateToAddress(this.stealth).toString('hex') : null
 
+      const method = haal.methods.addVote(this.fromAscii(post), this.web3.utils.padRight(this.fromAscii(this.radio), 64))
+      const encodedABI = method.encodeABI()
 
-
-     const method = haal.methods.addVote(this.fromAscii(post), this.web3.utils.padRight(this.fromAscii(this.radio), 64));
-     const encodedABI = method.encodeABI();
-
-     const estimateGas2 = await this.web3.eth.estimateGas({
+      const estimateGas2 = await this.web3.eth.estimateGas({
         from: ethAddress,
         to: haalAddress,
         data: encodedABI
-     });
+      })
 
       // const contract = await this.web3.eth.Contract(minABI, haalAddress);
 
-      let privateKey = Buffer.from(this.stealth.privKey, 'hex');
+      const privateKey = Buffer.from(this.stealth, 'hex')
 
       console.log(`choised element ${this.web3.utils.padRight(this.fromAscii(this.radio), 64)}`)
       console.log(`estimateGas: ${estimateGas2}`)
       console.log(`EthStealth Address ${ethAddress}`)
-      //console.log(`account balance ${ await contract.methods.balanceOf("0xE97f91fb1fd8d57c7084A11e134a3726686988db").call()}`)
+      // console.log(`account balance ${ await contract.methods.balanceOf("0xE97f91fb1fd8d57c7084A11e134a3726686988db").call()}`)
 
-
-      let rawTx = {
+      const rawTx = {
         // nonce: this.web3.utils.toHex(this.web3.eth.getTransactionCount(ethAddress, 'pending')),
         nonce: this.web3.utils.toHex(await this.web3.eth.getTransactionCount(ethAddress)),
         from: ethAddress,
@@ -223,23 +198,23 @@ export default {
         data: encodedABI
       }
 
-      let unsignedTx = new Tx(rawTx);
-      unsignedTx.sign(privateKey);
+      const unsignedTx = new Tx(rawTx)
+      unsignedTx.sign(privateKey)
 
-      let serializedTx = unsignedTx.serialize();
-      let tx = await this.web3.eth.sendSignedTransaction('0x' + serializedTx.toString('hex'));
-      let thiis = this;
-      console.log(`Transaction Hash ${tx.transactionHash}`);
+      const serializedTx = unsignedTx.serialize()
+      const tx = await this.web3.eth.sendSignedTransaction('0x' + serializedTx.toString('hex'))
+      const thiis = this
+      console.log(`Transaction Hash ${tx.transactionHash}`)
       this.web3.eth.getTransactionReceipt(tx.transactionHash).then(result => {
-        if(result.status){
+        if (result.status) {
           thiis.$message({
             message: 'Vote commited to blockchain correctly.',
             type: 'success'
-          });
-        }else {
-          thiis.$message.error('Oops, error commitimg vote');
+          })
+        } else {
+          thiis.$message.error('Oops, error commitimg vote')
         }
-      }) 
+      })
 
       // this.drizzleInstance
       //       .contracts[contract]
