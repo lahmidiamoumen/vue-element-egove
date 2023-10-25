@@ -66,7 +66,7 @@
           type="text"
           style="float: right; margin: 6px 0px;padding: 6px 16px;margin-left: 8px"
           plain
-          :border="true"
+          border
           :disabled="!radio"
           :loading="loading"
           @click="onVote(doc.id)"
@@ -80,9 +80,8 @@
 
       <ul v-if="error" class="list-inline">
         <li>
-          <span class="link-black text-sm">
-            <i class="el-icon-share" />
-            {{ error }}
+          <span class="link-black text-md">
+            <el-tag type="danger">{{ error }}</el-tag>
           </span>
         </li>
       </ul>
@@ -246,7 +245,7 @@ export default {
         })
       } catch (e) {
         if (e.code === -32000) {
-          this.error = e.message
+          this.error = 'Insufficient funds for gas'
         }
         this.loading = false
         this.$message.error(e)

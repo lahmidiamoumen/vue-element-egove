@@ -164,7 +164,7 @@ export default {
           console.log(response)
           that.ewCount = that.votersCounts
           console.log(`counts: ${that.ewCount}`)
-          for (var i = that.ewCount; i >= 0; i--) {
+          for (var i = 0; i < that.ewCount + 1; i++) {
             // ew =  this.drizzleInstance
             //         .contracts[contract]
             //         .methods['getEphemeralWallets'].cacheCall(i);
