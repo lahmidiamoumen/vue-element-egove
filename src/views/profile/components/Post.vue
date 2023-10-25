@@ -218,7 +218,7 @@ export default {
       console.log(`choised element ${this.web3.utils.padRight(this.fromAscii(this.radio), 64)}`)
       console.log(`estimateGas: ${estimateGas2}`)
       console.log(`EthStealth Address ${ethAddress}`)
-      console.log(`account balance ${await contract.methods.balanceOf(ethAddress).call()}`)
+      // console.log(`account balance ${await contract.methods.balanceOf(ethAddress).call()}`)
 
       try {
         const trasnCount = await this.web3.eth.getTransactionCount(ethAddress)
