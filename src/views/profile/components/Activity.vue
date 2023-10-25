@@ -335,7 +335,7 @@
 <script>
 import Post from './Post'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
-const ethereum = require('ethereumjs-utils')
+// const ethereum = require('ethereumjs-utils')
 import { createPost } from '@/api/article'
 import { mapGetters } from 'vuex'
 import { categories, ministiries } from './data'
@@ -441,9 +441,10 @@ export default {
       return this.drizzleInstance.web3
     },
     ethAddress() {
-      return this.stealth
-        ? '0x' + ethereum.privateToAddress(this.stealth.privKey).toString('hex')
-        : ''
+      return Buffer.from(this.stealth.privKey, 'hex')
+      // return this.stealth
+      //   ? '0x' + ethereum.privateToAddress(this.stealth.privKey).toString('hex')
+      //   : ''
     }
   },
   created() {
