@@ -237,7 +237,7 @@
         <b>Votes Count: </b> {{ votesCount }} <br>
         <b> Stealth Account Blance: </b> {{ balance }} <br>
         <b>Stealth Account Hash: </b> {{ ethAddress }}
-        <!-- <span style="visibility: hidden">{{ getBalanced() }}</span> -->
+        <span style="visibility: hidden">{{ getBalanced() }}</span>
       </div>
     </el-card>
     <el-card class="box-shadow">
@@ -441,12 +441,11 @@ export default {
       return this.drizzleInstance.web3
     },
     ethAddress() {
-      console.log(this.stealth)
-      return ''
+      // console.log(this.stealth)
       // return Buffer.from(this.stealth.privKey, 'hex')
-      // return this.stealth
-      //   ? '0x' + ethereum.privateToAddress(this.stealth.privKey).toString('hex')
-      //   : ''
+      return this.stealth
+        ? '0x' + ethereum.privateToAddress(this.stealth).toString('hex')
+        : ''
     }
   },
   created() {
@@ -463,7 +462,7 @@ export default {
   },
   methods: {
     async getBalanced() {
-      const b = Buffer.from(this.stealth.privKey, 'hex')
+      const b = this.ethAddress()
       this.balance = b
       return b
     },
