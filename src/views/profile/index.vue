@@ -3,14 +3,14 @@
     <div v-if="user" class="dashboard-editor-container">
       <el-row :gutter="20">
         <el-col :span="3" :xs="24">
-          <span style="padding: 5px"></span>
+          <span style="padding: 5px" />
         </el-col>
         <el-col :span="5" :xs="24">
           <user-card :user="user" />
         </el-col>
 
         <el-col :span="13" :xs="24">
-          <el-card>              
+          <el-card>
             <activity :feed="feed" @paginationGanged="sortChanged($event)" />
           </el-card>
         </el-col>
@@ -24,13 +24,11 @@
 import { mapGetters } from 'vuex'
 import UserCard from './components/UserCard'
 import Activity from './components/Activity'
-import Timeline from './components/Timeline'
-import Account from './components/Account'
 import { fetchListAll } from '@/api/article'
 
 export default {
   name: 'Profile',
-  components: { UserCard, Activity, Timeline, Account },
+  components: { UserCard, Activity },
   data() {
     return {
       importanceOptions: [],
@@ -60,13 +58,13 @@ export default {
   created() {
     this.listQuery.id = this.$route.params && this.$route.params.id
     // this.fetchEssai(id)
-  
-    this.getUser();
+
+    this.getUser()
     this.getListAll()
   },
   methods: {
     sortChanged(sortObject) {
-      this.listQuery = Object.assign(this.listQuery, sortObject);
+      this.listQuery = Object.assign(this.listQuery, sortObject)
       this.getListAll()
     },
     getUser() {
