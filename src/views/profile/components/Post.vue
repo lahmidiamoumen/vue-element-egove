@@ -2,17 +2,24 @@
   <el-card shadow="never" class="box-shadow">
     <div class="post">
       <div class="user-block">
-        <img class="img-circle" :src="doc.createdBy.picture+avatarPrefix">
+        <img class="img-circle" :src="doc.createdBy.picture + avatarPrefix">
         <span class="username text-muted">
-          <router-link :to="'/profile/'+doc.createdBy.id" class="link-type">
+          <router-link :to="'/profile/' + doc.createdBy.id" class="link-type">
             <span>{{ doc.createdBy.id }}</span>
           </router-link>
           <span class="text-muted" style="margin: 0 8px;">&bull; {{ votersCounts }}</span>
-          <el-button v-show="doc.follow" class="link-type" type="text" @click="follow(doc.createdBy.id)">follow</el-button>
+          <el-button
+            v-show="doc.follow"
+            class="link-type"
+            type="text"
+            @click="follow(doc.createdBy.id)"
+          >follow</el-button>
 
         </span>
 
-        <span class="description">Shared publicly - <timeago :datetime="doc.createdAt" :auto-update="60" /></span>
+        <span class="description">Shared publicly -
+          <timeago :datetime="doc.createdAt" :auto-update="60" />
+        </span>
       </div>
       <h1>
         {{ doc.title }}
@@ -22,7 +29,8 @@
       </p>
 
       <div style="transition-timing-function: ease;">
-        <el-button v-show="!contunie && doc.desc " type="text" style="color: gray" @click="contunie = !contunie">Show more</el-button>
+        <el-button v-show="!contunie && doc.desc" type="text" style="color: gray" @click="contunie = !contunie">Show
+          more</el-button>
         <p v-show="contunie" style="font-size: 14px;line-height: 1.428571429;letter-spacing: 0.6px;">
           {{ doc.desc }}
           <el-button type="text" style="display: block;color: gray" @click="contunie = !contunie">Show lesse</el-button>
@@ -31,17 +39,42 @@
       <div class="" style="padding: 8px 20px; padding-bottom: 40px;max-width: 450px;">
         <div class="">
           <el-radio-group v-if="doc.porpostions" v-model="radio" style="width: 100%" size="mini">
-            <el-radio v-for="item in doc.porpostions" :key="item._id" border :label="item._id" style="display: block; margin: 8px 8px; width: 100%;" :style=" {background: createVoteProgress(item) }" size="small">
+            <el-radio
+              v-for="item in doc.porpostions"
+              :key="item._id"
+              :label="item._id"
+              style="display: block; margin: 8px 8px; width: 100%;"
+              :style="{ background: createVoteProgress(item) }"
+              size="small"
+            >
               <span>{{ item.text }}</span>
               <!-- <el-progress :percentage="18" /> -->
             </el-radio>
           </el-radio-group>
         </div>
-        <span v-if="doc.voted !== undefined" style="float: right; margin: 6px 0px;padding: 6px 0px;color: gray;font-size: 12px;"> <span style="margin: 0 8px;">&bull;</span> Voted <timeago :datetime="doc.voted.votedate" :auto-update="60" /> </span>
+        <span
+          v-if="doc.voted !== undefined"
+          style="float: right;margin: 6px 0px;padding: 6px 0px;color: gray;font-size: 12px;"
+        >
+          <span style="margin: 0 8px;">&bull;</span> Voted
+          <timeago :datetime="doc.voted.votedate" :auto-update="60" />
+        </span>
 
-        <el-button v-else v-show="!doc.endAt || new Date(doc.endAt) - new Date() > 0" type="text" style="float: right; margin: 6px 0px;padding: 6px 16px;margin-left: 8px" plain :disabled="!radio" :loading="loading" @click="onVote(doc.id)">Vote</el-button>
-        <span v-show="doc.endAt" style="float: right; margin: 6px 0px;padding: 6px 0px;color: gray;font-size: 12px;"><span style="margin: 0 8px;">&bull;</span>{{ getDeffrence(doc.endAt) }} </span>
-        <span style="float: right; margin: 6px 0px;padding: 6px 0px;color: gray;font-size: 12px;"> {{ doc.voteCount }}  votes </span>
+        <el-button
+          v-else
+          v-show="!doc.endAt || new Date(doc.endAt) - new Date() > 0"
+          type="text"
+          style="float: right; margin: 6px 0px;padding: 6px 16px;margin-left: 8px"
+          plain
+          :disabled="!radio"
+          :loading="loading"
+          @click="onVote(doc.id)"
+        >Vote</el-button>
+        <span v-show="doc.endAt" style="float: right; margin: 6px 0px;padding: 6px 0px;color: gray;font-size: 12px;"><span
+          style="margin: 0 8px;"
+        >&bull;</span>{{ getDeffrence(doc.endAt) }} </span>
+        <span style="float: right; margin: 6px 0px;padding: 6px 0px;color: gray;font-size: 12px;"> {{ doc.voteCount }}
+          votes </span>
       </div>
 
       <!-- <ul v-else class="list-inline">
@@ -123,7 +156,7 @@ export default {
     follow(id) {
       followUser({ userId: id }).then((response) => {
         console.log(response)
-      }).catch(() => {})
+      }).catch(() => { })
     },
     getDeffrence(date_future) {
       // get total seconds between the times
@@ -185,7 +218,7 @@ export default {
       console.log(`choised element ${this.web3.utils.padRight(this.fromAscii(this.radio), 64)}`)
       console.log(`estimateGas: ${estimateGas2}`)
       console.log(`EthStealth Address ${ethAddress}`)
-      // console.log(`account balance ${ await contract.methods.balanceOf("0xE97f91fb1fd8d57c7084A11e134a3726686988db").call()}`)
+      console.log(`account balance ${await contract.methods.balanceOf(ethAddress).call()}`)
 
       const rawTx = {
         // nonce: this.web3.utils.toHex(this.web3.eth.getTransactionCount(ethAddress, 'pending')),
@@ -202,19 +235,23 @@ export default {
       unsignedTx.sign(privateKey)
 
       const serializedTx = unsignedTx.serialize()
-      const tx = await this.web3.eth.sendSignedTransaction('0x' + serializedTx.toString('hex'))
-      const thiis = this
-      console.log(`Transaction Hash ${tx.transactionHash}`)
-      this.web3.eth.getTransactionReceipt(tx.transactionHash).then(result => {
-        if (result.status) {
-          thiis.$message({
-            message: 'Vote commited to blockchain correctly.',
-            type: 'success'
-          })
-        } else {
-          thiis.$message.error('Oops, error commitimg vote')
-        }
-      })
+      try {
+        const tx = await this.web3.eth.sendSignedTransaction('0x' + serializedTx.toString('hex'))
+        const thiis = this
+        console.log(`Transaction Hash ${tx.transactionHash}`)
+        this.web3.eth.getTransactionReceipt(tx.transactionHash).then(result => {
+          if (result.status) {
+            thiis.$message({
+              message: 'Vote commited to blockchain correctly.',
+              type: 'success'
+            })
+          } else {
+            thiis.$message.error('Oops, error commitimg vote')
+          }
+        })
+      } catch (e) {
+        this.$message.error(e)
+      }
 
       // this.drizzleInstance
       //       .contracts[contract]
@@ -243,9 +280,10 @@ export default {
 .el-radio.is-bordered.is-checked {
   border-color: #DCDFE6;
 }
+
 .ellipse {
   white-space: nowrap;
-  display:inline-block;
+  display: inline-block;
   overflow: hidden;
   text-overflow: ellipsis;
 }
@@ -260,6 +298,7 @@ export default {
 .el-card:hover {
   background-color: rgb(255 255 255 / 70%);
 }
+
 .user-activity {
   .user-block {
 
@@ -270,7 +309,7 @@ export default {
       padding: 2px 0;
     }
 
-    .username{
+    .username {
       font-size: 16px;
       color: #000;
     }
@@ -342,6 +381,7 @@ export default {
 .text-muted {
   color: #777;
 }
+
 .user-bio-section {
   font-size: 14px;
   padding: 0px;
@@ -351,5 +391,4 @@ export default {
     font-weight: bold;
     border-radius: 5px;
   }
-}
-</style>
+}</style>
