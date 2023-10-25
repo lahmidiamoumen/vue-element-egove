@@ -181,7 +181,7 @@ export default {
             if (keypair != null) break
           }
           if (keypair != null) {
-            this.$store.commit('user/SET_STEALTH', keypair)
+            this.$store.commit('user/SET_STEALTH', keypair.privKey)
             console.log(`key pair found ! => ${keypair}`)
           }
         })
