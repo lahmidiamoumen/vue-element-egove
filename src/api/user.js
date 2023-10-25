@@ -33,6 +33,14 @@ export function pushStealth(data) {
   })
 }
 
+export function saveStealth(data) {
+  return request({
+    url: '/users/stealthSave',
+    method: 'post',
+    data
+  })
+}
+
 export function logout() {
   return request({
     url: '/vue-element-admin/user/logout',

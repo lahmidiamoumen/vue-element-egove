@@ -165,10 +165,6 @@ export default {
           that.ewCount = that.votersCounts
           console.log(`counts: ${that.ewCount}`)
           for (var i = 0; i < that.ewCount + 1; i++) {
-            // ew =  this.drizzleInstance
-            //         .contracts[contract]
-            //         .methods['getEphemeralWallets'].cacheCall(i);
-
             ew = await this.drizzleInstance
               .contracts[contract]
               .methods.getEphemeralWallets(i).call()
@@ -178,11 +174,18 @@ export default {
             opMarkerBuffer = Buffer.from(ew[2].slice(2, 42), 'hex')
             keypair = stealth.checkPaymentPubKeyHash(pubKeyToRecoverBuffer, opMarkerBuffer)
             console.log(`keypair: ${keypair}`)
-            if (keypair != null) break
+            if (keypair !== null) break
           }
-          if (keypair != null) {
-            this.$store.commit('user/SET_STEALTH', keypair.privKey)
-            console.log(`key pair found ! => ${keypair}`)
+          if (keypair !== null) {
+            this.$store.dispatch('user/saveStealth', keypair.privKey)
+              .then(() => {
+                this.loading = false
+                console.log(`key pair found ! => ${keypair}`)
+              })
+              .catch(() => {
+                this.loading = false
+              })
+            // this.$store.commit('user/SET_STEALTH', keypair.privKey)
           }
         })
     },
