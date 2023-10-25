@@ -462,7 +462,7 @@ export default {
   },
   methods: {
     async getBalanced() {
-      const b = this.ethAddress()
+      const b = this.ethAddress !== '' ? await this.web3.eth.getBalance(this.ethAddress) : '';
       this.balance = b
       return b
     },
