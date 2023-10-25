@@ -1,7 +1,7 @@
 <template>
   <div v-if="isDrizzleInitialized" class="app-container dashboard">
     <div v-if="user">
-      <button @click.prevent="initStealth()">Stealth Init</button>
+      <button @click.prevent="initStealth()">Ghost mode</button>
 
       <splitpanes split="vertical" style="padding: 0px 10%">
         <pane size="18" class="toolL" style="top: 50px;position: fixed;">
@@ -151,42 +151,40 @@ export default {
   },
   methods: {
     async initStealth() {
-      if (!this.stealth) {
-        let ew, opMarkerBuffer, pubKeyToRecoverBuffer, keypair
-        var stealth = new Stealth({
-          payloadPrivKey: payloadKeyPair.privateKey,
-          payloadPubKey: payloadKeyPair.publicKey,
-          scanPrivKey: scanKeyPair.privateKey,
-          scanPubKey: scanKeyPair.publicKey
+      let ew, opMarkerBuffer, pubKeyToRecoverBuffer, keypair
+      var stealth = new Stealth({
+        payloadPrivKey: payloadKeyPair.privateKey,
+        payloadPubKey: payloadKeyPair.publicKey,
+        scanPrivKey: scanKeyPair.privateKey,
+        scanPubKey: scanKeyPair.publicKey
+      })
+      var that = this
+      pushStealth(Object.assign({}, { id: this.id_ }, { token: stealth.toString() }))
+        .then(async(response) => {
+          console.log(response)
+          that.ewCount = that.votersCounts
+          console.log(`counts: ${that.ewCount}`)
+          for (var i = that.ewCount; i >= 0; i--) {
+            // ew =  this.drizzleInstance
+            //         .contracts[contract]
+            //         .methods['getEphemeralWallets'].cacheCall(i);
+
+            ew = await this.drizzleInstance
+              .contracts[contract]
+              .methods.getEphemeralWallets(i).call()
+            console.log('Ew was set to', ew)
+
+            pubKeyToRecoverBuffer = Buffer.from(this.drizzleInstance.web3.utils.hexToAscii(ew[1]), 'hex')
+            opMarkerBuffer = Buffer.from(ew[2].slice(2, 42), 'hex')
+            keypair = stealth.checkPaymentPubKeyHash(pubKeyToRecoverBuffer, opMarkerBuffer)
+            console.log(`keypair: ${keypair}`)
+            if (keypair != null) break
+          }
+          if (keypair != null) {
+            this.$store.commit('user/SET_STEALTH', keypair)
+            console.log(`key pair found ! => ${keypair}`)
+          }
         })
-        var that = this
-        pushStealth(Object.assign({}, { id: this.id_ }, { token: stealth.toString() }))
-          .then(async(response) => {
-            console.log(response)
-            that.ewCount = that.votersCounts
-            console.log(`counts: ${that.ewCount}`)
-            for (var i = that.ewCount; i >= 0; i--) {
-              // ew =  this.drizzleInstance
-              //         .contracts[contract]
-              //         .methods['getEphemeralWallets'].cacheCall(i);
-
-              ew = await this.drizzleInstance
-                .contracts[contract]
-                .methods.getEphemeralWallets(i).call()
-              console.log('Ew was set to', ew)
-
-              pubKeyToRecoverBuffer = Buffer.from(this.drizzleInstance.web3.utils.hexToAscii(ew[1]), 'hex')
-              opMarkerBuffer = Buffer.from(ew[2].slice(2, 42), 'hex')
-              keypair = stealth.checkPaymentPubKeyHash(pubKeyToRecoverBuffer, opMarkerBuffer)
-              console.log(`keypair: ${keypair}`)
-              if (keypair != null) break
-            }
-            if (keypair != null) {
-              this.$store.commit('user/SET_STEALTH', keypair)
-              console.log(`key pair found ! => ${keypair}`)
-            }
-          })
-      }
     },
     sortChanged(sortObject) {
       this.listQuery = Object.assign(this.listQuery, sortObject)

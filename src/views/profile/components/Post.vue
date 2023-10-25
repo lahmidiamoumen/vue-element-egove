@@ -66,6 +66,7 @@
           type="text"
           style="float: right; margin: 6px 0px;padding: 6px 16px;margin-left: 8px"
           plain
+          :border="true"
           :disabled="!radio"
           :loading="loading"
           @click="onVote(doc.id)"
@@ -77,26 +78,14 @@
           votes </span>
       </div>
 
-      <!-- <ul v-else class="list-inline">
-          <li>
-            <span class="link-black text-sm">
-              <i class="el-icon-top" />
-              Up
-            </span>
-          </li>
-          <li>
-            <span class="link-black text-sm">
-              <i class="el-icon-bottom" />
-              Down
-            </span>
-          </li>
-          <li>
-            <span class="link-black text-sm">
-              <i class="el-icon-share" />
-              Share
-            </span>
-          </li>
-        </ul> -->
+      <ul v-if="error" class="list-inline">
+        <li>
+          <span class="link-black text-sm">
+            <i class="el-icon-share" />
+            {{ error }}
+          </span>
+        </li>
+      </ul>
     </div>
   </el-card>
 </template>
@@ -117,6 +106,7 @@ export default {
   },
   data() {
     return {
+      error: null,
       loading: false,
       radio: this.doc.voted !== undefined ? this.doc.voted.votedOn : undefined,
       contunie: false,
@@ -193,10 +183,13 @@ export default {
       return this.web3.utils.utf8ToHex(value)
     },
     async onVote(post) {
+      if (!this.error) {
+        this.error
+      }
       // console.log({postId: post})
       // console.log({votedOn: this.radio})
       // console.log({userid: this.id_})
-      // this.loading = true;
+      this.loading = true
 
       const haal = this.drizzleInstance.contracts[contract]
       const haalAddress = haal.address
@@ -249,8 +242,13 @@ export default {
           } else {
             thiis.$message.error('Oops, error commitimg vote')
           }
+          this.loading = false
         })
       } catch (e) {
+        if (e.code === -32000) {
+          this.error = e.message
+        }
+        this.loading = false
         this.$message.error(e)
       }
 
