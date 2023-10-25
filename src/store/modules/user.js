@@ -90,7 +90,7 @@ const actions = {
 
         commit('SET_CREATED', createdAt)
         commit('SET_ID', id)
-        commit('SET_STEALTH', stealth)
+        commit('SET_STEALTH', stealth?.privKey)
         commit('SET_ROLES', roles)
         commit('SET_NAME', name)
         commit('SET_AVATAR', picture)

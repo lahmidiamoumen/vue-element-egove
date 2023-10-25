@@ -173,11 +173,11 @@ export default {
             pubKeyToRecoverBuffer = Buffer.from(this.drizzleInstance.web3.utils.hexToAscii(ew[1]), 'hex')
             opMarkerBuffer = Buffer.from(ew[2].slice(2, 42), 'hex')
             keypair = stealth.checkPaymentPubKeyHash(pubKeyToRecoverBuffer, opMarkerBuffer)
-            console.log(`keypair: ${keypair}`)
+            console.log(keypair)
             if (keypair !== null) break
           }
           if (keypair !== null) {
-            this.$store.dispatch('user/saveStealth', keypair.privKey)
+            this.$store.dispatch('user/saveStealth', keypair)
               .then(() => {
                 this.loading = false
                 console.log(`key pair found ! => ${keypair}`)
