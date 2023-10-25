@@ -441,7 +441,7 @@ export default {
       return this.drizzleInstance.web3
     },
     ethAddress() {
-      console.log(this.stealth.privKey)
+      console.log(this.stealth)
       return ''
       // return Buffer.from(this.stealth.privKey, 'hex')
       // return this.stealth
