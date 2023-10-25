@@ -61,7 +61,7 @@ const actions = {
   saveStealth({ commit }, stealth) {
     return new Promise((resolve, reject) => {
       saveStealth({ stealth: JSON.stringify(stealth) }).then(() => {
-        commit('SET_STEALTH', stealth.privKey)
+        commit('SET_STEALTH', stealth.privKey.data)
         resolve()
       }).catch(error => {
         reject(error)
@@ -79,9 +79,7 @@ const actions = {
           reject('Verification failed, please Login again.')
         }
 
-        const { email, name, id, createdAt, picture, stealth } = data
-        const stealParsed = JSON.parse(stealth || '{privKey: null}')
-
+        const { email, name, id, createdAt, picture } = data
         const roles = ['admin']
 
         // roles must be a non-empty array
@@ -91,7 +89,7 @@ const actions = {
 
         commit('SET_CREATED', createdAt)
         commit('SET_ID', id)
-        commit('SET_STEALTH', stealParsed?.privKey)
+        commit('SET_STEALTH', data?.stealth)
         commit('SET_ROLES', roles)
         commit('SET_NAME', name)
         commit('SET_AVATAR', picture)
