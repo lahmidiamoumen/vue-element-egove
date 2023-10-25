@@ -60,7 +60,7 @@ const actions = {
 
   saveStealth({ commit }, stealth) {
     return new Promise((resolve, reject) => {
-      saveStealth({ stealth: JSON.stringify(stealth.privKey.data) }).then(() => {
+      saveStealth({ stealth: stealth.privKey.data }).then(() => {
         commit('SET_STEALTH', stealth.privKey)
         resolve()
       }).catch(error => {
