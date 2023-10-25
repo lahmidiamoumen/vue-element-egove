@@ -60,7 +60,7 @@ const actions = {
 
   saveStealth({ commit }, stealth) {
     return new Promise((resolve, reject) => {
-      saveStealth({ stealth: stealth }).then(() => {
+      saveStealth({ stealth: JSON.stringify(stealth) }).then(() => {
         commit('SET_STEALTH', stealth.privKey)
         resolve()
       }).catch(error => {
@@ -80,6 +80,7 @@ const actions = {
         }
 
         const { email, name, id, createdAt, picture, stealth } = data
+        const stealParsed = JSON.parse(stealth)
 
         const roles = ['admin']
 
@@ -90,7 +91,7 @@ const actions = {
 
         commit('SET_CREATED', createdAt)
         commit('SET_ID', id)
-        commit('SET_STEALTH', stealth?.privKey)
+        commit('SET_STEALTH', stealParsed?.privKey)
         commit('SET_ROLES', roles)
         commit('SET_NAME', name)
         commit('SET_AVATAR', picture)
