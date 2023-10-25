@@ -335,7 +335,7 @@
 <script>
 import Post from './Post'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
-// const ethereum = require('ethereumjs-utils')
+const ethereum = require('ethereumjs-utils')
 import { createPost } from '@/api/article'
 import { mapGetters } from 'vuex'
 import { categories, ministiries } from './data'
