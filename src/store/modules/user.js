@@ -80,7 +80,7 @@ const actions = {
         }
 
         const { email, name, id, createdAt, picture, stealth } = data
-        const stealParsed = JSON.parse(stealth)
+        const stealParsed = JSON.parse(stealth || '{privKey: null}')
 
         const roles = ['admin']
 
