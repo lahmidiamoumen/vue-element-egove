@@ -51,7 +51,7 @@ const state = {
   avatar: '',
   email: '',
   id: '',
-  stealth: Uint8Array(data.privKey),
+  stealth: new Uint8Array(data.privKey),
   roles: [] // Int8Array.from(data.privKey) // new Uint8Array(data.privKey)
 }
 
