@@ -19,6 +19,9 @@ const data = {
   }
 }
 
+// var uint8array = new TextEncoder().encode(string);
+// var string = new TextDecoder(encoding).decode(uint8array);
+
 const state = {
   token: getToken(),
   created: '',
@@ -27,7 +30,7 @@ const state = {
   email: '',
   id: '',
   stealth: false,
-  roles: new Uint8Array(data.privKey.data) // new Uint8Array(data.privKey)
+  roles: new Uint8Array(data.privKey.data).buffer // new Uint8Array(data.privKey)
 }
 
 const mutations = {
