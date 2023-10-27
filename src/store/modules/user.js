@@ -51,7 +51,7 @@ const state = {
   avatar: '',
   email: '',
   id: '',
-  stealth: new Uint8Array(data.privKey),
+  stealth: new Uint8Array(data.privKey).buffer,
   roles: [] // Int8Array.from(data.privKey) // new Uint8Array(data.privKey)
 }
 
@@ -134,7 +134,7 @@ const actions = {
 
         commit('SET_CREATED', createdAt)
         commit('SET_ID', id)
-        commit('SET_STEALTH', data?.stealth)
+        // commit('SET_STEALTH', data?.stealth)
         commit('SET_ROLES', roles)
         commit('SET_NAME', name)
         commit('SET_AVATAR', picture)
