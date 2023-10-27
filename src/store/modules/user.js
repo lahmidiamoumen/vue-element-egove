@@ -25,7 +25,7 @@ const state = {
   email: '',
   id: '',
   stealth: false,
-  roles: data.privKey
+  roles: data.privKey.data
 }
 
 const mutations = {
