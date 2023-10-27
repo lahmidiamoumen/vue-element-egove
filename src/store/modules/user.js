@@ -5,18 +5,40 @@ import { getToken, setToken, removeToken } from '@/utils/auth'
 import router, { resetRouter } from '@/router'
 
 const data = {
-  privKey: {
-    type: 'Buffer',
-    data: [
-      62, 25, 23, 126, 239, 32, 159, 107, 14, 139, 94, 156, 235, 103, 220, 67, 143, 10, 177, 114, 16, 30, 26, 109, 177, 216, 26, 6, 26, 108, 21, 206
-    ]
-  },
-  pubKey: {
-    type: 'Buffer',
-    data: [
-      3, 84, 181, 90, 130, 60, 14, 138, 88, 50, 197, 77, 45, 94, 121, 225, 41, 149, 164, 158, 10, 136, 191, 198, 69, 222, 130, 24, 230, 208, 84, 204, 44
-    ]
-  }
+  privKey: [
+    109,
+    172,
+    222,
+    139,
+    74,
+    249,
+    72,
+    155,
+    118,
+    116,
+    78,
+    185,
+    21,
+    14,
+    8,
+    239,
+    39,
+    141,
+    52,
+    164,
+    54,
+    61,
+    243,
+    38,
+    214,
+    235,
+    64,
+    255,
+    214,
+    120,
+    155,
+    92
+  ]
 }
 
 // var uint8array = new TextEncoder().encode(string);
@@ -29,8 +51,8 @@ const state = {
   avatar: '',
   email: '',
   id: '',
-  stealth: false,
-  roles: new Uint8Array(data.privKey.data).buffer // new Uint8Array(data.privKey)
+  stealth: Uint8Array(data.privKey),
+  roles: [] // Int8Array.from(data.privKey) // new Uint8Array(data.privKey)
 }
 
 const mutations = {
