@@ -1,4 +1,6 @@
-import { login, getInfo, saveStealth } from '@/api/user'
+import { login, getInfo
+  //, saveStealth,
+} from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import router, { resetRouter } from '@/router'
 
@@ -75,12 +77,15 @@ const actions = {
 
   saveStealth({ commit }, stealth) {
     return new Promise((resolve, reject) => {
-      saveStealth({ stealth: stealth.privKey.data }).then(() => {
-        commit('SET_STEALTH', stealth.privKey)
-        resolve()
-      }).catch(error => {
-        reject(error)
-      })
+      console.log(stealth.privKey.data)
+      commit('SET_STEALTH', stealth.privKey)
+      resolve()
+      // saveStealth({ stealth: stealth.privKey.data }).then(() => {
+      //   commit('SET_STEALTH', stealth.privKey)
+      //   resolve()
+      // }).catch(error => {
+      //   reject(error)
+      // })
     })
   },
 
