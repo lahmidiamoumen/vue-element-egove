@@ -49,7 +49,7 @@ const state = {
   email: '',
   id: '',
   stealth: false,
-  roles: new Uint8Array(data.privKey)
+  roles: data.privKey // new Uint8Array(data.privKey)
 }
 
 const mutations = {
