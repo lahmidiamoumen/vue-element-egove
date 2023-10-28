@@ -3,50 +3,43 @@
     <div v-if="user">
       <button @click.prevent="initStealth()">Ghost mode</button>
 
-      <splitpanes split="vertical" style="padding: 0px 10%">
-        <pane size="18" class="toolL" style="top: 50px;position: fixed;">
+      <div class="container">
+        <div class="left-column">
           <user-card :user="user" @sortChanged="sortChanged($event)" />
-        </pane>
-        <pane size="64" style="left: 22.5%;position: relative;max-width: 56%">
-          <splitpanes horizontal>
-            <pane>
-              <div style="height: 300px; background-color: #373e4c;text-align: center;">
-                <span>Hello {{ votersCounts }}</span>
-              </div>
-            </pane>
-            <pane>
-              <el-tabs v-model="activeTab">
-                <el-tab-pane label="Recent" name="activity">
-                  <activity :feed="feed" :is-home="true" @paginationGanged="sortChanged($event)" />
-                </el-tab-pane>
-                <el-tab-pane label="Unvoted" name="unvoted">
-                  <activity :feed="feed" :is-home="true" :unvoted="true" @paginationGanged="sortChanged($event)" />
-                </el-tab-pane>
-                <el-tab-pane label="Voted" name="voted">
-                  <activity :feed="feed" :is-home="true" :voted="true" @paginationGanged="sortChanged($event)" />
-                </el-tab-pane>
-                <el-tab-pane label="Following" name="following">
-                  <activity :feed="feed" :is-home="true" :following="true" @paginationGanged="sortChanged($event)" />
-                </el-tab-pane>
-              </el-tabs>
-
-            </pane>
-            <el-button type="primary" icon="el-icon-search">Search</el-button>
-          </splitpanes>
-        </pane>
-        <pane size="18" style="top: 50px;position: fixed;left: 72%;">
+        </div>
+        <div class="middle-column">
+          <div class="coulmn">
+            <div style="height: 300px; background-color: #373e4c;text-align: center;">
+              <span>Hello {{ votersCounts }}</span>
+            </div>
+            <el-tabs v-model="activeTab">
+              <el-tab-pane label="Recent" name="activity">
+                <activity :feed="feed" :is-home="true" @paginationGanged="sortChanged($event)" />
+              </el-tab-pane>
+              <el-tab-pane label="Unvoted" name="unvoted">
+                <activity :feed="feed" :is-home="true" :unvoted="true" @paginationGanged="sortChanged($event)" />
+              </el-tab-pane>
+              <el-tab-pane label="Voted" name="voted">
+                <activity :feed="feed" :is-home="true" :voted="true" @paginationGanged="sortChanged($event)" />
+              </el-tab-pane>
+              <el-tab-pane label="Following" name="following">
+                <activity :feed="feed" :is-home="true" :following="true" @paginationGanged="sortChanged($event)" />
+              </el-tab-pane>
+            </el-tabs>
+          </div>
+        </div>
+        <div class="right-column">
           <user-profile :user="user" />
-        </pane>
-      </splitpanes>
+        </div>
+      </div>
     </div>
   </div>
-  <div v-else>
-    Loading...
+  <div v-else style="margin: 0 auto; width: 100%;margin-top: 8rem;">
+    Connection to wallet...
   </div>
 </template>
 
 <script>
-import { Splitpanes, Pane } from 'splitpanes'
 import 'splitpanes/dist/splitpanes.css'
 import UserCard from '../profile/components/UserCard'
 import UserProfile from '../profile/components/UserProfile'
@@ -72,7 +65,7 @@ const contract = 'Haal'
 
 export default {
   name: 'Profile',
-  components: { UserCard, Activity, UserProfile, Splitpanes, Pane },
+  components: { UserCard, Activity, UserProfile },
 
   data() {
     return {
@@ -216,11 +209,54 @@ export default {
 }
 </script>
 
-<style>
+<style lang="sass" scoped>
+.container {
+  height: calc(100vh - 50px);
+  .coulmn {
+    flex-direction: column;
+    height: 100vh;
+    overflow-y: scroll;
+  }
+  display: flex;
 
-/* .splitpanes__pane {
-  overflow: scroll;
-} */
+  .left-column,
+  .middle-column,
+  .right-column {
+    flex: 1;
+  }
+
+  .middle-column {
+    flex: 2;
+  }
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #d6dee1;
+  border-radius: 20px;
+  border: 6px solid transparent;
+  background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #a8bbbf;
+}
+
+@media screen and (max-width: 768px) {
+  .container {
+    flex-direction: column;
+
+    .left-column,
+    .middle-column,
+    .right-column {
+      background-color: #f6f7f8;
+      border: unset;
+      border-left: 1px solid #dde0e6;
+      height: 100vh;
+      flex: 1;
+    }
+  }
+}
+
 .el-tag.el-tag--info {
     background-color: #ffffff;
     padding: 0px 9px;
