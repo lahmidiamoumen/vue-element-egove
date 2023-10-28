@@ -237,7 +237,7 @@
         <b>Votes Count: </b> {{ votesCount }} <br>
         <b> Stealth Account Blance: </b> {{ balance }} <br>
         <b>Stealth Account Hash: </b> {{ ethAddress }}
-        <span style="visibility: hidden">{{ getBalanced() }}</span>
+        <span style="visibility: hidden">{{ getBalanced() }} ETH</span>
       </div>
     </el-card>
     <el-card class="box-shadow">
@@ -462,7 +462,7 @@ export default {
   },
   methods: {
     async getBalanced() {
-      const b = this.ethAddress !== '' ? (Number(await this.web3.eth.getBalance(this.ethAddress)) * Math.pow(10, -18)).toFixed(4) : ''
+      const b = this.ethAddress !== '' ? (Number(await this.web3.eth.getBalance(this.ethAddress)) * Math.pow(10, -18)).toFixed(4) : '0'
       this.balance = b
       return b
     },
