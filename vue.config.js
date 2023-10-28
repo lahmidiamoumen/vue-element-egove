@@ -32,7 +32,7 @@ module.exports = {
   devServer: {
     proxy: {
       '/api': {
-        target: process.env.NODE_ENV === 'development' ? 'http://localhost:9000/' : ''
+        target: process.env.NODE_ENV === 'development' ? 'http://localhost:8080/' : ''
       }
     },
     port: port,
