@@ -1,5 +1,5 @@
 import { login, getInfo
-  //, saveStealth,
+  , saveStealth
 } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import router, { resetRouter } from '@/router'
@@ -41,9 +41,6 @@ const data = {
   ]
 }
 
-// var uint8array = new TextEncoder().encode(string);
-// var string = new TextDecoder(encoding).decode(uint8array);
-
 const state = {
   token: getToken(),
   created: '',
@@ -52,7 +49,7 @@ const state = {
   email: '',
   id: '',
   stealth: data.privKey,
-  roles: [] // Int8Array.from(data.privKey) // new Uint8Array(data.privKey)
+  roles: []
 }
 
 const mutations = {
@@ -103,14 +100,16 @@ const actions = {
   saveStealth({ commit }, stealth) {
     return new Promise((resolve, reject) => {
       console.log(stealth.privKey)
-      commit('SET_STEALTH', stealth.privKey)
-      resolve()
-      // saveStealth({ stealth: stealth.privKey }).then(() => {
-      //   commit('SET_STEALTH', stealth.privKey)
-      //   resolve()
-      // }).catch(error => {
-      //   reject(error)
-      // })
+      // commit('SET_STEALTH', stealth.privKey)
+      // resolve()
+      const typedArray = new Uint8Array(stealth.privKey)
+
+      saveStealth({ stealth: Array.from(typedArray) }).then(() => {
+        commit('SET_STEALTH', stealth.privKey)
+        resolve()
+      }).catch(error => {
+        reject(error)
+      })
     })
   },
 
