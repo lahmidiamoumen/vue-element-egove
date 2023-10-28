@@ -235,9 +235,9 @@
     <el-card shadow="never" class="box-shadow">
       <div class="post">
         <b>Votes Count: </b> {{ votesCount }} <br>
-        <b> Stealth Account Blance: </b> {{ balance }} <br>
+        <b> Stealth Account Blance: </b> {{ balance }} ETH <br>
         <b>Stealth Account Hash: </b> {{ ethAddress }}
-        <span style="visibility: hidden">{{ getBalanced() }} ETH</span>
+        <span style="visibility: hidden">{{ getBalanced() }}</span>
       </div>
     </el-card>
     <el-card class="box-shadow">
