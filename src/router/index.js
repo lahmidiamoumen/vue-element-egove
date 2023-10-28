@@ -116,7 +116,7 @@ export const constantRoutes = [
         path: 'index',
         component: () => import('@/views/tab/index'),
         name: 'Wall',
-        meta: { title: 'Wall', icon: 'tab' }
+        meta: { title: 'Home', icon: 'tab' }
       }
     ]
   },
