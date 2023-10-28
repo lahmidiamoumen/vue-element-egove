@@ -3,7 +3,7 @@
     <el-card v-if="isHome" shadow="never" class="box-shadow">
       <div class="post">
         <div class="user-block">
-          <img class="img-circle" :src="avatar + avatarPrefix">
+          <img class="img-circle" :src="avatar">
           <span class="username text-muted">{{ id_ }}</span>
           <span class="description">Create new proposal</span>
         </div>

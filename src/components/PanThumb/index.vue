@@ -38,11 +38,11 @@ export default {
 .pan-item {
   width: 200px;
   height: 200px;
-  border-radius: 50%;
-  display: inline-block;
+  /* border-radius: 50%; */
+  /* display: inline-block; */
   position: relative;
-  cursor: default;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  /* cursor: default; */
+  /* box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2); */
 }
 
 .pan-info-roles-container {
@@ -59,6 +59,7 @@ export default {
   overflow: hidden;
   position: absolute;
   transform-origin: 95% 40%;
+  mix-blend-mode: lighten;
   transition: all 0.3s ease-in-out;
 }
 

@@ -7,21 +7,22 @@
         </div>
       </div>
       <h2 style="padding: 0px 20px;margin: 8px 0px ">Filter By</h2>
-      
+
       <el-menu
         class="el-menu-vertical-demo"
         @open="handleOpen"
-        @close="handleClose">
+        @close="handleClose"
+      >
         <el-menu-item index="0" style="padding-left: 40px;" @click="handleMenu(0)">
-          <img src="https://static.xx.fbcdn.net/rsrc.php/v3/yU/r/4mhXitnfwjM.png" alt=""/>
+          <img src="https://static.xx.fbcdn.net/rsrc.php/v3/yU/r/4mhXitnfwjM.png" alt="">
           <span>Popularity</span>
         </el-menu-item>
         <el-menu-item index="1" style="padding-left: 40px;" @click="handleMenu(1)">
-          <img src="https://static.xx.fbcdn.net/rsrc.php/v3/yN/r/xv1f8IDT6TY.png" alt=""/>
+          <img src="https://static.xx.fbcdn.net/rsrc.php/v3/yN/r/xv1f8IDT6TY.png" alt="">
           <span>Friends</span>
         </el-menu-item>
         <el-menu-item index="2" style="padding-left: 40px;" @click="handleMenu(2)">
-          <img src="https://static.xx.fbcdn.net/rsrc.php/v3/yd/r/2XSFu6dqGH8.png" alt=""/>
+          <img src="https://static.xx.fbcdn.net/rsrc.php/v3/yd/r/2XSFu6dqGH8.png" alt="">
           <span>Delegates</span>
         </el-menu-item>
       </el-menu>
@@ -33,15 +34,16 @@
             size="small"
             multiple
             filterable
-            @change="handleFilter"
             collapse-tags
             style="width: 100%;padding: 0px 16px"
             placeholder="Select Topic of intrest"
+            @change="handleFilter"
           >
             <el-option-group
               v-for="group in topMin"
               :key="group.label"
-              :label="group.label">
+              :label="group.label"
+            >
 
               <el-option
                 v-for="item in group.options"
@@ -58,11 +60,11 @@
             v-model="listQuery.profession"
             filterable
             multiple
-            @change="handleFilter"
             size="small"
             collapse-tags
             style="width: 100%;padding: 0px 16px"
             placeholder="Select Profession"
+            @change="handleFilter"
           >
             <el-option
               v-for="item in options"
@@ -80,7 +82,7 @@
               <span>Rate of approval </span>
             </b>
           </div>
-          <el-slider @change="handleFilter" v-model="rateOfApproval" style="margin: 0 25px" />
+          <el-slider v-model="rateOfApproval" style="margin: 0 25px" @change="handleFilter" />
         </div>
 
         <!-- <div>
@@ -93,20 +95,17 @@
           <pie-chart />
         </div>
 
-        
-
       </div>
     </el-card>
   </div>
 </template>
 
 <script>
-import PanThumb from '@/components/PanThumb'
 import { categories, ministiries } from './data'
 import PieChart from './PieChart'
 
 export default {
-  components: { PanThumb, PieChart },
+  components: { PieChart },
   props: {
     sort: {
       type: Object,
@@ -137,7 +136,7 @@ export default {
         q: undefined,
         profession: [],
         topics: [],
-        rateOfApproval: 0,
+        rateOfApproval: 0
       },
       topMin: [{
         label: 'Topics',
@@ -158,20 +157,20 @@ export default {
   methods: {
     handleMenu(index) {
       console.log(`cales ${index}`)
-        // this.$emit('sortChanged',listQuery)
+      // this.$emit('sortChanged',listQuery)
     },
     handleFilter() {
-      console.log("cales")
-      this.$emit('sortChanged',this.listQuery)
+      console.log('cales')
+      this.$emit('sortChanged', this.listQuery)
     },
     handleOpen(key, keyPath) {
-      console.log(key, keyPath);
+      console.log(key, keyPath)
     },
     handleClose(key, keyPath) {
-      console.log(key, keyPath);
+      console.log(key, keyPath)
     }
-  },
-  
+  }
+
 }
 </script>
 

@@ -2,7 +2,7 @@
   <el-card shadow="never" class="box-shadow">
     <div class="post">
       <div class="user-block">
-        <img class="img-circle" :src="doc.createdBy.picture + avatarPrefix">
+        <img class="img-circle" :src="doc.createdBy.picture">
         <span class="username text-muted">
           <router-link :to="'/profile/' + doc.createdBy.id" class="link-type">
             <span>{{ doc.createdBy.id }}</span>
