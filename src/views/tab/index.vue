@@ -241,22 +241,6 @@ export default {
   background-color: #a8bbbf;
 }
 
-@media screen and (max-width: 768px) {
-  .container {
-    flex-direction: column;
-
-    .left-column,
-    .middle-column,
-    .right-column {
-      background-color: #f6f7f8;
-      border: unset;
-      border-left: 1px solid #dde0e6;
-      height: 100vh;
-      flex: 1;
-    }
-  }
-}
-
 .el-tag.el-tag--info {
     background-color: #ffffff;
     padding: 0px 9px;
@@ -301,7 +285,6 @@ export default {
     border-radius: 20px;
     border: unset;
 }
-
 .el-upload ,.el-upload-dragger{
   width: 100% !important;
   height: 130px;
@@ -310,5 +293,21 @@ export default {
   padding: 0px;
   background-color: #EBEEF5; /* #fafbfc; */
   position: relative;
+}
+@media screen and (max-width: 768px) {
+  .container {
+    flex-direction: column;
+    height: auto;
+
+    .left-column,
+    .middle-column,
+    .right-column {
+      background-color: #f6f7f8;
+      border: unset;
+      border-left: 1px solid #dde0e6;
+      height: 100vh;
+      flex: 1;
+    }
+  }
 }
 </style>
