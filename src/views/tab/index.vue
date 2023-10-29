@@ -209,7 +209,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .container {
   height: calc(100vh - 50px);
   .coulmn {

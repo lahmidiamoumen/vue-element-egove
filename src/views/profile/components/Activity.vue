@@ -499,15 +499,16 @@ export default {
           const stackId = this.drizzleInstance.contracts['Haal'].methods[
             'addProposals'
           ].cacheSend(this.fromAscii(response.id), porpostionsID)
+          console.log(stackId)
 
           if (state.transactionStack[stackId]) {
             const txHash = state.transactionStack[stackId]
             console.log(state.transactions[txHash].status)
-            this.data = Object.assign({}, init)
-            this.loading = false
-            this.seen = false
-            this.feed.list.unshift(response)
           }
+          this.data = Object.assign({}, init)
+          this.loading = false
+          this.seen = false
+          this.feed.list.unshift(response)
         }
 
         // const createdBy = {
