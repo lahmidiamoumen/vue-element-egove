@@ -511,6 +511,12 @@ export default {
           this.seen = false
           this.feed.list.unshift(response)
         }
+
+        // const createdBy = {
+        //   id: this.id_,
+        //   picture: this.avatar
+        // }
+        // const createdAt = Date.now()
       })
     },
     getListAll() {
