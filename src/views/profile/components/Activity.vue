@@ -457,7 +457,8 @@ export default {
       return b
     },
     async getPkey() {
-      const res = this.drizzleInstance.contracts['Haal'].methods.encryptionPublicKey()
+      const res = await this.drizzleInstance.contracts['Haal'].methods.encryptionPublicKey()
+      console.log(res)
       console.log(this.drizzleInstance.web3.utils.hexToAscii(res))
     },
     convertArray(arr) {
