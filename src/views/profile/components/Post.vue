@@ -95,8 +95,8 @@ import { followUser } from '@/api/user'
 import { mapGetters } from 'vuex'
 const Tx = require('ethereumjs-tx')
 const ethereum = require('ethereumjs-utils')
-import paillier from '../../../../node_modules/paillier-bignum/src/paillier.js'
-const bignum = require('big-integer')
+// import paillier from '../../../../node_modules/paillier-bignum/src/paillier.js'
+// const bignum = require('big-integer')
 
 const contract = 'Haal'
 export default {
@@ -198,19 +198,20 @@ export default {
         method: 'encryptionPublicKey'
       })
       const hex = this.drizzleInstance.web3.utils.hexToAscii(res)
-      const _publicKey = JSON.parse(hex)
-      const publicKey = new paillier.PublicKey(bignum(_publicKey.n), bignum(_publicKey.g))
-      const propos = this.doc.porpostions
-      console.log(propos)
-      for (let i = 0; i < propos.length; i++) {
-        let bn1 = bignum(propos[i])
-        bn1 = bn1.mod(publicKey.n)
-        while (bn1.lt(0)) bn1 = bn1.add(publicKey.n)
-        // encrypt the vote with published pk
-        paillier.PublicKey.apply
-        propos[i] = publicKey.encrypt(propos[i])
-      }
-      console.log(propos)
+      console.log(hex)
+      // const _publicKey = JSON.parse(hex)
+      // const publicKey = new paillier.PublicKey(bignum(_publicKey.n), bignum(_publicKey.g))
+      // const propos = this.doc.porpostions
+      // console.log(propos)
+      // for (let i = 0; i < propos.length; i++) {
+      //   let bn1 = bignum(propos[i])
+      //   bn1 = bn1.mod(publicKey.n)
+      //   while (bn1.lt(0)) bn1 = bn1.add(publicKey.n)
+      //   // encrypt the vote with published pk
+      //   paillier.PublicKey.apply
+      //   propos[i] = publicKey.encrypt(propos[i])
+      // }
+      // console.log(propos)
 
       const haal = this.drizzleInstance.contracts[contract]
       const haalAddress = haal.address
