@@ -6,11 +6,6 @@
           <img class="img-circle" :src="avatar">
           <span class="username text-muted">{{ id_ }}</span>
           <span class="description">Create new proposal</span>
-          <el-button
-            @click="getPkey"
-          >
-            getPKey
-          </el-button>
         </div>
 
         <div v-if="!seen" class="footer-post">
@@ -309,6 +304,7 @@
 import Post from './Post'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 const ethereum = require('ethereumjs-utils')
+
 import { createPost } from '@/api/article'
 import { mapGetters } from 'vuex'
 import { categories, ministiries } from './data'
@@ -449,25 +445,12 @@ export default {
       method: 'votesCount',
       methodArgs: []
     })
-    this.$store.dispatch('drizzle/REGISTER_CONTRACT', {
-      contractName: contract,
-      method: 'encryptionPublicKey',
-      methodArgs: []
-    })
   },
   methods: {
     async getBalanced() {
       const b = this.ethAddress !== '' ? (Number(await this.web3.eth.getBalance(this.ethAddress)) * Math.pow(10, -18)).toFixed(4) : '0'
       this.balance = b
       return b
-    },
-    getPkey() {
-      const res = this.getContractData({
-        contract: contract,
-        method: 'encryptionPublicKey'
-      })
-      console.log(res)
-      console.log(this.drizzleInstance.web3.utils.hexToAscii(res))
     },
     convertArray(arr) {
       const list = []

@@ -95,6 +95,8 @@ import { followUser } from '@/api/user'
 import { mapGetters } from 'vuex'
 const Tx = require('ethereumjs-tx')
 const ethereum = require('ethereumjs-utils')
+import paillier from '../../../../node_modules/paillier-bignum/src/paillier.js'
+const bignum = require('big-integer')
 
 const contract = 'Haal'
 export default {
@@ -107,7 +109,7 @@ export default {
     return {
       error: null,
       loading: false,
-      radio: this.doc.voted !== undefined ? this.doc.voted.votedOn : undefined,
+      radio: this.doc.voted?.votedOn,
       contunie: false,
       avatarPrefix,
       carouselImages: 'https://wpimg.wallstcn.com/9679ffb0-9e0b-4451-9916-e21992218054.jpg'
@@ -129,11 +131,11 @@ export default {
     }
   },
   created() {
-    // this.$store.dispatch('drizzle/REGISTER_CONTRACT', {
-    //     contractName: contract,
-    //     method:'getproposals',
-    //     methodArgs:[],
-    // });
+    this.$store.dispatch('drizzle/REGISTER_CONTRACT', {
+      contractName: contract,
+      method: 'encryptionPublicKey',
+      methodArgs: []
+    })
     this.$store.dispatch('drizzle/REGISTER_CONTRACT', {
       contractName: contract,
       method: 'votesCount',
@@ -190,6 +192,26 @@ export default {
       // console.log({userid: this.id_})
       this.loading = true
 
+      // encrypyt
+      const res = this.getContractData({
+        contract: contract,
+        method: 'encryptionPublicKey'
+      })
+      const hex = this.drizzleInstance.web3.utils.hexToAscii(res)
+      const _publicKey = JSON.parse(hex)
+      const publicKey = new paillier.PublicKey(bignum(_publicKey.n), bignum(_publicKey.g))
+      const propos = this.doc.porpostions
+      console.log(propos)
+      for (let i = 0; i < propos.length; i++) {
+        let bn1 = bignum(propos[i])
+        bn1 = bn1.mod(publicKey.n)
+        while (bn1.lt(0)) bn1 = bn1.add(publicKey.n)
+        // encrypt the vote with published pk
+        paillier.PublicKey.apply
+        propos[i] = publicKey.encrypt(propos[i])
+      }
+      console.log(propos)
+
       const haal = this.drizzleInstance.contracts[contract]
       const haalAddress = haal.address
       const ethAddress = this.stealth ? '0x' + ethereum.privateToAddress(this.stealth).toString('hex') : null
@@ -215,7 +237,6 @@ export default {
       try {
         const trasnCount = await this.web3.eth.getTransactionCount(ethAddress)
         const rawTx = {
-          // nonce: this.web3.utils.toHex(this.web3.eth.getTransactionCount(ethAddress, 'pending')),
           nonce: this.web3.utils.toHex(trasnCount),
           from: ethAddress,
           to: haalAddress,
