@@ -449,6 +449,11 @@ export default {
       method: 'votesCount',
       methodArgs: []
     })
+    this.$store.dispatch('drizzle/REGISTER_CONTRACT', {
+      contractName: contract,
+      method: 'encryptionPublicKey',
+      methodArgs: []
+    })
   },
   methods: {
     async getBalanced() {
@@ -456,8 +461,11 @@ export default {
       this.balance = b
       return b
     },
-    async getPkey() {
-      const res = await this.drizzleInstance.contracts['Haal'].methods.encryptionPublicKey()
+    getPkey() {
+      const res = this.getContractData({
+        contract: contract,
+        method: 'encryptionPublicKey'
+      })
       console.log(res)
       console.log(this.drizzleInstance.web3.utils.hexToAscii(res))
     },
